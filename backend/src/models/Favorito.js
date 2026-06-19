@@ -2,10 +2,18 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Favorito = sequelize.define('Favorito', {
-  // O Sequelize vai injetar o ID do Utilizador e o ID do Jogo aqui automaticamente!
+  // Vamos forçar a criação destas colunas provisoriamente
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  jogoId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   dataAdicao: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW // Regista automaticamente a data e hora em que o jogo foi favoritado
+    defaultValue: DataTypes.NOW
   }
 });
 

@@ -1,65 +1,74 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Para redirecionar o utilizador após o login
+import api from '../services/api'; // A nossa autoestrada para o backend
 
-export default function Login() {
-  // Estados para guardar o que o utilizador escreve
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [erro, setErro] = useState('');
+  const navigate = useNavigate();
 
-  // Função que corre quando clicamos no botão de "Entrar"
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Evita que a página faça refresh
-    console.log('Tentar login com:', { email, password });
-    // Futuramente: axios.post('/login', { email, password })...
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault(); // Impede a página de recarregar
+    setErro('');
+
+    try {
+      // 1. Envia os dados para a rota de autenticação do teu backend
+      const resposta = await api.post('/auth/login', { email, password });
+
+      // 2. Se o backend responder com sucesso e trouxer o token
+      if (resposta.data.success || resposta.data.token) {
+        // Guarda o token no cofre do navegador (localStorage)
+        localStorage.setItem('token', resposta.data.token);
+        
+        console.log('Login efetuado com sucesso! Token guardado.');
+        
+        // Redireciona e força a página a atualizar para a Navbar detetar o Token instantaneamente
+        window.location.href = '/';
+      }
+    } catch (err) {
+      // Captura o erro do backend (ex: "Password incorreta" ou "Utilizador não existe")
+      setErro(err.response?.data?.message || 'Erro ao efetuar login. Tenta novamente.');
+    }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6 col-lg-5">
-          <div className="card shadow-sm border-0">
-            <div className="card-body p-5">
-              <h2 className="text-center mb-4">Iniciar Sessão</h2>
-              
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label className="form-label">Email</label>
-                  <input 
-                    type="email" 
-                    className="form-control" 
-                    placeholder="teuemail@exemplo.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required 
-                  />
-                </div>
-                
-                <div className="mb-4">
-                  <label className="form-label">Password</label>
-                  <input 
-                    type="password" 
-                    className="form-control" 
-                    placeholder="********"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required 
-                  />
-                </div>
-                
-                <button type="submit" className="btn btn-primary w-100 fw-bold">
-                  Entrar
-                </button>
-              </form>
+    <div className="container mt-5" style={{ maxWidth: '400px' }}>
+      <div className="card p-4 shadow-sm border-0">
+        <h3 className="mb-4 fw-bold text-center">Entrar</h3>
+        
+        {erro && <div className="alert alert-danger py-2">{erro}</div>}
 
-              <div className="text-center mt-4">
-                <p className="mb-0">
-                  Não tens conta? <Link to="/register" className="text-decoration-none">Regista-te aqui</Link>
-                </p>
-              </div>
-            </div>
+        <form onSubmit={handleLoginSubmit}>
+          <div className="mb-3">
+            <label className="form-label fw-semibold">E-mail</label>
+            <input 
+              type="email" 
+              className="form-control" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required 
+            />
           </div>
-        </div>
+
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Palavra-passe</label>
+            <input 
+              type="password" 
+              className="form-control" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required 
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary w-100 fw-bold mt-2">
+            Iniciar Sessão
+          </button>
+        </form>
       </div>
     </div>
   );
 }
+
+export default Login;
