@@ -7,7 +7,7 @@ function Home() {
   const [topJogos, setTopJogos] = useState([]);
   const [favoritosIds, setFavoritosIds] = useState([]); 
   
-  // 1. O ESTADO DA PESQUISA
+  // Estado da pesquisa
   const [termoPesquisa, setTermoPesquisa] = useState(''); 
   
   const [carregando, setCarregando] = useState(true);
@@ -31,7 +31,7 @@ function Home() {
 
         const [respostaJogos, respostaTop] = await Promise.all([
           api.get('/jogos'),
-          api.get('/jogos/top')
+          api.get('/jogos/top-semana')
         ]);
         
         setJogos(respostaJogos.data.jogos || respostaJogos.data);
@@ -49,7 +49,7 @@ function Home() {
     buscarDados();
   }, []);
 
-  // 2. A LÓGICA DO FILTRO: Cria uma lista nova só com os jogos que têm o texto da pesquisa
+  // Cria uma lista nova só com os jogos que têm o texto da pesquisa
   const jogosFiltrados = jogos.filter((jogo) => 
     jogo.titulo.toLowerCase().includes(termoPesquisa.toLowerCase())
   );
@@ -84,7 +84,7 @@ function Home() {
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <h3 className="fw-bold text-dark mb-0">Catálogo Completo</h3>
         
-        {/* 3. A NOSSA BARRA DE PESQUISA VISUAL */}
+        {/* BARRA DE PESQUISA VISUAL */}
         <div className="input-group shadow-sm" style={{ maxWidth: '400px' }}>
           <span className="input-group-text bg-white border-end-0">🔍</span>
           <input 
@@ -108,7 +108,6 @@ function Home() {
         </div>
       ) : (
         <div className="row g-4">
-          {/* Agora fazemos o MAP nos jogosFiltrados e não na lista inteira */}
           {jogosFiltrados.map((jogo) => (
             <div className="col-md-4" key={jogo.id}>
               <JogoCard jogo={jogo} favoritoInicial={favoritosIds.includes(jogo.id)} />

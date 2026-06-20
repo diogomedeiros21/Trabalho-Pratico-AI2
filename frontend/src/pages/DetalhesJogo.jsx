@@ -4,7 +4,7 @@ import { FaStar } from 'react-icons/fa';
 import api from '../services/api';
 
 function DetalhesJogo() {
-  // O useParams vai buscar o ID que está no endereço do browser (ex: /jogos/1)
+  // O useParams vai buscar o ID que está no endereço do browser
   const { id } = useParams(); 
   const [jogo, setJogo] = useState(null);
   const [carregando, setCarregando] = useState(true);
@@ -38,7 +38,6 @@ function DetalhesJogo() {
       <Link to="/" className="btn btn-outline-secondary mb-4">← Voltar ao Catálogo</Link>
       
       <div className="row bg-white p-4 rounded-4 shadow-sm border">
-        {/* Lado Esquerdo: Imagem */}
         <div className="col-md-5 text-center mb-4 mb-md-0">
           <img 
             src={jogo.imagem} 
@@ -48,7 +47,6 @@ function DetalhesJogo() {
           />
         </div>
 
-        {/* Lado Direito: Informações e Comentários */}
         <div className="col-md-7">
           <div className="d-flex justify-content-between align-items-center mb-2">
             <h1 className="fw-bold mb-0">{jogo.titulo}</h1>
@@ -66,8 +64,7 @@ function DetalhesJogo() {
 
           <hr className="my-4" />
 
-          {/* Secção de Comentários */}
-          <h5 className="fw-bold mb-3">💬 O que a comunidade diz:</h5>
+          <h5 className="fw-bold mb-3">O que a comunidade diz:</h5>
           
           {avaliacoes.length === 0 ? (
             <p className="text-muted fst-italic">Ainda não há comentários. Sê o primeiro a avaliar!</p>

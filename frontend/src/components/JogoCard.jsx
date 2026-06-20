@@ -3,14 +3,13 @@ import { FaHeart, FaRegHeart, FaStar } from 'react-icons/fa';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
 
-// 1. Adicionamos o 'favoritoInicial' (por defeito é false)
 function JogoCard({ jogo, favoritoInicial = false }) {
   const [isFavorito, setIsFavorito] = useState(favoritoInicial);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nota, setNota] = useState(5);
   const [comentario, setComentario] = useState('');
 
-  // 2. Este useEffect garante que se o estado inicial mudar, o coração atualiza
+  // Garantir que se o estado inicial mudar, o coração atualiza
   useEffect(() => {
     setIsFavorito(favoritoInicial);
   }, [favoritoInicial]);
@@ -26,7 +25,7 @@ function JogoCard({ jogo, favoritoInicial = false }) {
     }
   };
 
-  // 2. Função para enviar a Avaliação
+  // Função para enviar a Avaliação
   const handleAvaliar = async (e) => {
     e.preventDefault(); // Evita que a página faça refresh
     try {
@@ -50,7 +49,6 @@ function JogoCard({ jogo, favoritoInicial = false }) {
     <>
       {/* O Cartão do Jogo */}
       <div className="card h-100 shadow-sm border-0 bg-light" style={{ width: '18rem' }}>
-        {/* A imagem agora é um link clicável */}
         <Link to={`/jogo/${jogo.id}`}>
           <img 
            src={jogo.imagem} 
@@ -65,14 +63,12 @@ function JogoCard({ jogo, favoritoInicial = false }) {
             <h5 className="card-title fw-bold mb-1">{jogo.titulo}</h5>
           </Link>
           
-          {/* Tenta mostrar a categoria se o backend do Medeiros a enviar */}
           <span className="badge bg-secondary mb-3 w-50">
             {jogo.Categoria?.nome || "Shooter"}
           </span>
           
           <div className="mt-auto d-flex justify-content-between align-items-center">
             
-            {/* Zona das Estrelas (Agora é Clicável!) */}
             <div 
               className="d-flex align-items-center text-warning" 
               style={{ cursor: 'pointer' }}
@@ -96,7 +92,6 @@ function JogoCard({ jogo, favoritoInicial = false }) {
         </div>
       </div>
 
-      {/* A Janela Modal de Avaliação (Só aparece se mostrarModal for true) */}
       {mostrarModal && (
         <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1050 }}>
           <div className="modal-dialog modal-dialog-centered">
@@ -112,8 +107,8 @@ function JogoCard({ jogo, favoritoInicial = false }) {
                   <div className="mb-3">
                     <label className="form-label fw-semibold">Que nota dás a este jogo?</label>
                     <select className="form-select" value={nota} onChange={(e) => setNota(e.target.value)}>
-                      <option value="5">⭐⭐⭐⭐⭐ (5) - Obra-prima</option>
-                      <option value="4">⭐⭐⭐⭐ (4) - Muito Bom</option>
+                      <option value="5">⭐⭐⭐⭐⭐ (5) - Muito Bom</option>
+                      <option value="4">⭐⭐⭐⭐ (4) - Bom</option>
                       <option value="3">⭐⭐⭐ (3) - Razoável</option>
                       <option value="2">⭐⭐ (2) - Fraco</option>
                       <option value="1">⭐ (1) - Péssimo</option>

@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // O Medeiros vai criar este ficheiro de ligação
+const sequelize = require('../config/database');
 const bcrypt = require('bcrypt');
 
 const User = sequelize.define('User', {
@@ -21,10 +21,9 @@ const User = sequelize.define('User', {
   },
   role: {
     type: DataTypes.STRING,
-    defaultValue: 'user' // Pode ser 'user' ou 'admin' (para cumprir o requisito do professor)
+    defaultValue: 'user' 
   }
 }, {
-  // Este "hook" é a magia do Bcrypt: encripta a password automaticamente ANTES de gravar na BD
   hooks: {
     beforeCreate: async (user) => {
       if (user.password) {

@@ -9,7 +9,6 @@ function Perfil() {
   useEffect(() => {
     const buscarFavoritos = async () => {
       try {
-        // Vai bater à porta do backend usando o Token do utilizador
         const resposta = await api.get('/favoritos');
         setFavoritos(resposta.data.favoritos || resposta.data || []);
         setCarregando(false);
@@ -61,7 +60,7 @@ function Perfil() {
         <div className="row g-4">
           {favoritos.map((jogo) => (
             <div className="col-md-4" key={jogo.id}>
-              {/* Dizemos logo ao cartão que este jogo tem de ter o coração vermelho! */}
+              {/* Dizer logo ao cartão que este jogo tem de ter o coração vermelho! */}
               <JogoCard jogo={jogo} favoritoInicial={true} />
             </div>
           ))}

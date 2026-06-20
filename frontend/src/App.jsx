@@ -6,6 +6,8 @@ import Register from './pages/Register';
 import JogoList from './view/JogoList';
 import JogoAdd from './view/JogoAdd';
 import JogoEdit from './view/JogoEdit';
+import Perfil from './pages/Perfil'; 
+import DetalhesJogo from './pages/DetalhesJogo';
 
 function App() {
   return (

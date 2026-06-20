@@ -2,12 +2,9 @@ import axios from 'axios';
 
 // Cria a ligação base
 const api = axios.create({
-  baseURL: 'http://localhost:3000' // Confirma se esta é a porta do teu backend
+  baseURL: 'http://localhost:3000'
 });
 
-// Este "interceptor" funciona como um segurança na fronteira.
-// Antes de qualquer pedido sair do React para o Node, ele verifica se há um token
-// e coloca-o no cabeçalho (Headers) da requisição.
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   
