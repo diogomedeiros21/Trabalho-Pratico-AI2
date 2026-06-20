@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../services/api'; // O nosso "carteiro" a entrar em ação!
+import api from '../services/api';
 
 function Register() {
   const [nome, setNome] = useState('');
@@ -15,7 +15,6 @@ function Register() {
 
     try {
       // Envia os dados para a tua rota de registo no backend
-      // Atenção: Verifica se no teu backend a rota se chama '/auth/register' ou '/auth/registar'
       const resposta = await api.post('/auth/register', { nome, email, password });
 
       if (resposta.data.success || resposta.status === 201) {
@@ -24,7 +23,7 @@ function Register() {
         navigate('/login'); 
       }
     } catch (err) {
-      // Se houver erro (ex: e-mail já existe), mostra na página
+      // Se houver erro, mostra na página
       setErro(err.response?.data?.message || 'Erro ao criar conta. Tenta novamente.');
     }
   };
@@ -78,7 +77,6 @@ function Register() {
 
         <div className="mt-3 text-center">
           <span className="text-muted">Já tens conta? </span>
-          {/* Se usares outra rota para o Login (ex: '/entrar'), altera aqui */}
           <Link to="/login" className="text-decoration-none">Inicia sessão aqui</Link>
         </div>
       </div>

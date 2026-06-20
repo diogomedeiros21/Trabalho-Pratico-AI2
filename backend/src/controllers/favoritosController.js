@@ -2,10 +2,10 @@ const Favorito = require('../models/Favorito');
 const Jogo = require('../models/Jogo');
 const User = require('../models/User');
 
-// FUNÇÃO 1: Adicionar ou Remover dos Favoritos (Ação do Coração)
+// Adicionar ou Remover dos Favoritos 
 const adicionarFavorito = async (req, res) => {
   try {
-    const userId = req.user.id; // O id do teu token (extraído pelo authMiddleware)
+    const userId = req.user.id; 
     const { jogoId } = req.body;
 
     // Procura se o jogo já está nos favoritos
@@ -14,7 +14,7 @@ const adicionarFavorito = async (req, res) => {
     });
 
     if (favoritoExistente) {
-      // Se já lá está, o clique serve para remover (Tirar Like)
+      // Se já lá está, o clique serve para remover 
       await favoritoExistente.destroy();
       return res.json({ success: true, message: 'Removido dos favoritos.' });
     } else {
@@ -28,7 +28,7 @@ const adicionarFavorito = async (req, res) => {
   }
 };
 
-// FUNÇÃO 2: Listar Favoritos (Ação de abrir a página de Perfil)
+// Listar Favoritos 
 const listarFavoritos = async (req, res) => {
   try {
     const userId = req.user.id; 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Para redirecionar o utilizador após o login
-import api from '../services/api'; // A nossa autoestrada para o backend
+import api from '../services/api'; 
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -13,10 +13,10 @@ function Login() {
     setErro('');
 
     try {
-      // 1. Envia os dados para a rota de autenticação do teu backend
+      // Envia os dados para a rota de autenticação do backend
       const resposta = await api.post('/auth/login', { email, password });
 
-      // 2. Se o backend responder com sucesso e trouxer o token
+      // Se o backend responder com sucesso e trouxer o token
       if (resposta.data.success || resposta.data.token) {
         // Guarda o token no cofre do navegador (localStorage)
         localStorage.setItem('token', resposta.data.token);
@@ -27,7 +27,7 @@ function Login() {
         window.location.href = '/';
       }
     } catch (err) {
-      // Captura o erro do backend (ex: "Password incorreta" ou "Utilizador não existe")
+      // Captura o erro do backend 
       setErro(err.response?.data?.message || 'Erro ao efetuar login. Tenta novamente.');
     }
   };

@@ -1,19 +1,19 @@
 const Avaliacao = require('../models/Avaliacao');
 
-// FUNÇÃO: Criar ou Atualizar a Avaliação
+// Criar ou Atualizar a Avaliação
 const criarAvaliacao = async (req, res) => {
   try {
-    // 1. Quem está a avaliar e o que está a avaliar?
-    const userId = req.user.id; // Vem do token de segurança
+    // Quem está a avaliar e o que está a avaliar
+    const userId = req.user.id;
     const { jogoId, nota, comentario } = req.body;
 
-    // 2. Procura na base de dados se já existe uma avaliação deste utilizador para este jogo
+    // Procura na base de dados se já existe uma avaliação deste utilizador para este jogo
     const avaliacaoExistente = await Avaliacao.findOne({
       where: { userId: userId, jogoId: jogoId }
     });
 
     if (avaliacaoExistente) {
-      // 3. Se a avaliação já existe, editamos os valores e guardamos
+      // Se a avaliação já existe, edita os valores e guarda
       avaliacaoExistente.nota = nota;
       avaliacaoExistente.comentario = comentario;
       await avaliacaoExistente.save();
@@ -23,7 +23,7 @@ const criarAvaliacao = async (req, res) => {
         message: 'Avaliação atualizada com sucesso!' 
       });
     } else {
-      // 4. Se não existe, criamos um registo novo
+      // Se não existe, cria um registo novo
       const novaAvaliacao = await Avaliacao.create({
         userId,
         jogoId,
@@ -44,5 +44,4 @@ const criarAvaliacao = async (req, res) => {
 
 module.exports = {
   criarAvaliacao
-  // (Põe aqui outras funções se já as tinhas no ficheiro)
 };
