@@ -2,22 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-// Componente principal para listar os jogos
 export default function JogoList() {
-  // Inicializa o estado para guardar a lista de jogos recebida da API
   const [jogos, setJogos] = useState([]);
 
-  // Executa o pedido HTTP assim que o componente é carregado no ecrã
   useEffect(() => {
     carregarJogos();
   }, []);
 
-  // Efetua a chamada à API para obter a lista completa de jogos
   const carregarJogos = () => {
     axios.get('http://localhost:3000/jogos/list')
       .then(res => {
         if (res.data.success) {
-          // Atualiza o estado com os dados recebidos com sucesso
           setJogos(res.data.data);
         }
       })
@@ -26,7 +21,22 @@ export default function JogoList() {
       });
   };
 
-  // Função auxiliar para construir as linhas da tabela com os dados
+  // Efetua o pedido de eliminação e recarrega a lista em caso de sucesso
+  const eliminarJogo = (id) => {
+    if (window.confirm("Tem a certeza que pretende eliminar este jogo?")) {
+      axios.post(`http://localhost:3000/jogos/delete/${id}`)
+        .then(res => {
+          if (res.data.success) {
+            alert(res.data.message);
+            carregarJogos(); // Atualiza a tabela imediatamente
+          }
+        })
+        .catch(error => {
+          alert("Erro ao eliminar o jogo: " + error);
+        });
+    }
+  };
+
   const preencherTabela = () => {
     return jogos.map((jogo, index) => {
       return (
@@ -35,19 +45,17 @@ export default function JogoList() {
           <td>{jogo.titulo}</td>
           <td>{jogo.Categoria ? jogo.Categoria.nome : 'Sem Categoria'}</td>
           <td>
-            {/* Botão para navegar para a página de edição do jogo específico */}
             <Link to={`/jogos/edit/${jogo.id}`} className="btn btn-outline-info">Editar</Link>
           </td>
           <td>
-            {/* Botão para acionar a eliminação (a função de apagar será adicionada depois) */}
-            <button className="btn btn-outline-danger">Apagar</button>
+            {/* O clique aciona a função de eliminação passando o ID do jogo */}
+            <button onClick={() => eliminarJogo(jogo.id)} className="btn btn-outline-danger">Apagar</button>
           </td>
         </tr>
       );
     });
   };
 
-  // Constrói a estrutura visual da página com a tabela do Bootstrap
   return (
     <div className="container py-4">
       <div className="row mb-3">

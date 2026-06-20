@@ -64,9 +64,9 @@ app.get('/', (req, res) => {
 });
 
 // ==========================================
-// ⚙️ INICIALIZAÇÃO (Sincronizar BD e Ligar Servidor)
+// INICIALIZAÇÃO (Sincronizar BD e Ligar Servidor)
 // ==========================================
-// O sync({ alter: true }) lê os teus modelos e cria/atualiza as tabelas automaticamente
+// O sync({ alter: true }) lê os modelos e cria/atualiza as tabelas automaticamente
 sequelize.sync({ alter: true })
   .then(() => {
     console.log('✅ Base de dados sincronizada com sucesso!');

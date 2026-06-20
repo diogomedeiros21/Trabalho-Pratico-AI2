@@ -4,11 +4,12 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import JogoList from './view/JogoList';
+import JogoAdd from './view/JogoAdd';
+import JogoEdit from './view/JogoEdit';
 
 function App() {
   return (
     <BrowserRouter>
-      {/* A Navbar fica fora do Routes para aparecer em todas as páginas */}
       <Navbar />
       
       {/* Onde as páginas vão ser renderizadas */}
@@ -17,6 +18,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/jogos/list" element={<JogoList />} />
+        <Route path="/jogos/add" element={<JogoAdd />} />
+        <Route path="/jogos/edit/:id" element={<JogoEdit />} />
       </Routes>
     </BrowserRouter>
   );

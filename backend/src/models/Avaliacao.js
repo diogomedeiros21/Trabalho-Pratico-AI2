@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Liga à base de dados do Medeiros
+const sequelize = require('../config/database');
 
 const Avaliacao = sequelize.define('Avaliacao', {
   nota: {
@@ -7,7 +7,7 @@ const Avaliacao = sequelize.define('Avaliacao', {
     allowNull: false,
     validate: {
       min: 1,
-      max: 5 // Isto garante que ninguém consegue dar notas absurdas, apenas de 1 a 5!
+      max: 5 // Notas apenas de 1 a 5!
     }
   },
   comentario: {
