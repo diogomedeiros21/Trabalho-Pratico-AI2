@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { checkToken } = require('../middlewares/authMiddleware'); // Verifica o caminho!
-const { adicionarFavorito, listarFavoritos } = require('../controllers/favoritosController'); // Verifica este caminhoconst { checkToken } = require('../middlewares/authMiddleware');
-
+const { checkToken } = require('../middlewares/authMiddleware'); 
+const { adicionarFavorito, listarFavoritos } = require('../controllers/favoritosController'); 
 console.log("--- DEBUG DE ROTAS ---");
 console.log("checkToken:", checkToken);
 console.log("adicionarFavorito:", adicionarFavorito);

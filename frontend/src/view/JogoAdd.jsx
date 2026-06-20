@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import api from '../services/api';
+import Swal from 'sweetalert2';
 
 export default function JogoAdd() {
   const navigate = useNavigate();
 
-  // Estados para todos os campos que a tabela Jogo precisa
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [imagem, setImagem] = useState('');
   const [categoriaId, setCategoriaId] = useState('');
-
-  // Estado para a dropdown de categorias
   const [categorias, setCategorias] = useState([]);
 
-  // Ir buscar as categorias à rota oficial quando a página abre
   useEffect(() => {
-    axios.get('http://localhost:3000/categorias')
+    api.get('/categorias') // Substituído axios pelo api
       .then(res => {
         if (res.data.success) {
           setCategorias(res.data.data);
@@ -27,24 +24,28 @@ export default function JogoAdd() {
       .catch(erro => console.error("Erro ao carregar categorias:", erro));
   }, []);
 
-  // Função para enviar os dados reais para o backend
   const guardarJogo = (e) => {
     e.preventDefault();
     
     const dados = { titulo, descricao, imagem, categoriaId };
 
-    // Usa o router.post('/create') do jogoRoutes.js
-    axios.post('http://localhost:3000/jogos/create', dados)
+    api.post('/jogos/create', dados)
       .then(res => {
         if (res.data.success) {
-          alert("Jogo adicionado ao catálogo com sucesso!");
-          navigate('/jogos/list'); // Atira de volta para a tabela
+          Swal.fire({
+            title: 'Sucesso!',
+            text: 'Jogo adicionado ao catálogo com sucesso!',
+            icon: 'success',
+            confirmButtonText: 'Fantástico'
+          }).then(() => {
+            navigate('/jogos/list'); // Só muda de página depois de o utilizador fechar o alerta
+          });
         }
       })
       .catch(erro => {
-        alert("Erro ao gravar o jogo: " + erro);
+        Swal.fire('Erro!', 'Erro ao gravar o jogo. Confirma se tens permissões.', 'error');
       });
-  };
+  
 
   return (
     <div className="container py-4">
@@ -102,4 +103,5 @@ export default function JogoAdd() {
       </form>
     </div>
   );
+  }
 }

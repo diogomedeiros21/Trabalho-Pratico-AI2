@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
+import Swal from 'sweetalert2'; // Importação adicionada
 
 export default function JogoEdit() {
   const { id } = useParams(); 
@@ -12,16 +13,13 @@ export default function JogoEdit() {
   const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
-    // Carregar as categorias para a dropdown
-    axios.get('http://localhost:3000/categorias')
+    api.get('/categorias')
       .then(res => setCategorias(res.data))
       .catch(erro => console.error("Erro categorias:", erro));
 
-    // Carregar os dados do jogo específico
-    axios.get(`http://localhost:3000/jogos/get/${id}`)
+    api.get(`/jogos/get/${id}`)
       .then(res => {
         if (res.data.success && res.data.data.length > 0) {
-          // Vai buscar a posição [0] porque o backend usa findAll
           const jogo = res.data.data[0]; 
           setTitulo(jogo.titulo);
           setDescricao(jogo.descricao || '');
@@ -39,15 +37,28 @@ export default function JogoEdit() {
     
     const dados = { titulo, descricao, imagem, categoriaId };
 
-    axios.post(`http://localhost:3000/jogos/update/${id}`, dados)
+    api.post(`/jogos/update/${id}`, dados)
       .then(res => {
         if (res.data.success) {
-          alert(res.data.message); // Vai mostrar "Atualizado com sucesso" 
-          navigate('/jogos/list');
+          // Substituído o alert() pelo Swal.fire() com redirecionamento no final
+          Swal.fire({
+            title: 'Atualizado!',
+            text: res.data.message || 'O jogo foi atualizado com sucesso.',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then(() => {
+            navigate('/jogos/list');
+          });
         }
       })
       .catch(erro => {
-        alert("Erro ao atualizar o jogo: " + erro);
+        // Substituído o alert() pelo Swal.fire()
+        Swal.fire({
+          title: 'Erro!',
+          text: 'Erro ao atualizar o jogo. Confirma as tuas permissões.',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        });
       });
   };
 

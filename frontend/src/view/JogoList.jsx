@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
+import Swal from 'sweetalert2';
 
 export default function JogoList() {
   const [jogos, setJogos] = useState([]);
@@ -10,31 +11,49 @@ export default function JogoList() {
   }, []);
 
   const carregarJogos = () => {
-    axios.get('http://localhost:3000/jogos/list')
+    api.get('/jogos/list')
       .then(res => {
-        if (res.data.success) {
-          setJogos(res.data.data);
-        }
+        const listaDeJogos = res.data.data ? res.data.data : res.data;
+        setJogos(listaDeJogos);
       })
       .catch(error => {
         alert("Erro ao carregar os jogos: " + error);
       });
   };
 
-  // Efetua o pedido de eliminação e recarrega a lista em caso de sucesso
   const eliminarJogo = (id) => {
-    if (window.confirm("Tem a certeza que pretende eliminar este jogo?")) {
-      axios.post(`http://localhost:3000/jogos/delete/${id}`)
-        .then(res => {
-          if (res.data.success) {
-            alert(res.data.message);
-            carregarJogos(); // Atualiza a tabela imediatamente
-          }
-        })
-        .catch(error => {
-          alert("Erro ao eliminar o jogo: " + error);
-        });
-    }
+    Swal.fire({
+      title: 'Tem a certeza?',
+      text: "Esta ação não pode ser desfeita!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sim, apagar!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      // Se o utilizador clicou no botão "Sim, apagar!"
+      if (result.isConfirmed) {
+        api.post(`/jogos/delete/${id}`)
+          .then(res => {
+            if (res.data.success) {
+              Swal.fire(
+                'Apagado!',
+                res.data.message,
+                'success'
+              );
+              carregarJogos(); // Atualiza a tabela
+            }
+          })
+          .catch(error => {
+            Swal.fire(
+              'Erro!',
+              'Erro ao eliminar o jogo. Confirma se tens permissões de Admin.',
+              'error'
+            );
+          });
+      }
+    });
   };
 
   const preencherTabela = () => {
@@ -48,7 +67,6 @@ export default function JogoList() {
             <Link to={`/jogos/edit/${jogo.id}`} className="btn btn-outline-info">Editar</Link>
           </td>
           <td>
-            {/* O clique aciona a função de eliminação passando o ID do jogo */}
             <button onClick={() => eliminarJogo(jogo.id)} className="btn btn-outline-danger">Apagar</button>
           </td>
         </tr>
@@ -60,7 +78,7 @@ export default function JogoList() {
     <div className="container py-4">
       <div className="row mb-3">
         <div className="col">
-          <h2>Catálogo de Jogos</h2>
+          <h2>Catálogo de Jogos (Admin)</h2>
         </div>
         <div className="col text-end">
           <Link to="/jogos/add" className="btn btn-primary">Adicionar Jogo</Link>

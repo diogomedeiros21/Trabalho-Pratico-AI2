@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FaHeart, FaRegHeart, FaStar } from 'react-icons/fa';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2'; // Importação adicionada
 
 function JogoCard({ jogo, favoritoInicial = false }) {
   const [isFavorito, setIsFavorito] = useState(favoritoInicial);
@@ -9,7 +10,6 @@ function JogoCard({ jogo, favoritoInicial = false }) {
   const [nota, setNota] = useState(5);
   const [comentario, setComentario] = useState('');
 
-  // Garantir que se o estado inicial mudar, o coração atualiza
   useEffect(() => {
     setIsFavorito(favoritoInicial);
   }, [favoritoInicial]);
@@ -21,13 +21,18 @@ function JogoCard({ jogo, favoritoInicial = false }) {
         setIsFavorito(!isFavorito);
       }
     } catch (erro) {
-      alert("Precisas de fazer Login para adicionar aos favoritos!");
+      // Substituído o alert() pelo Swal.fire()
+      Swal.fire({
+        title: 'Atenção!',
+        text: 'Precisas de fazer Login para adicionar aos favoritos!',
+        icon: 'warning',
+        confirmButtonText: 'Entendido'
+      });
     }
   };
 
-  // Função para enviar a Avaliação
   const handleAvaliar = async (e) => {
-    e.preventDefault(); // Evita que a página faça refresh
+    e.preventDefault(); 
     try {
       const resposta = await api.post('/avaliacoes', {
         nota: Number(nota),
@@ -36,18 +41,29 @@ function JogoCard({ jogo, favoritoInicial = false }) {
       });
       
       if (resposta.data.success || resposta.status === 201) {
-        alert("Avaliação enviada com sucesso!");
-        setMostrarModal(false); // Fecha a janela
-        setComentario(''); // Limpa o texto
+        // Substituído o alert() pelo Swal.fire()
+        Swal.fire({
+          title: 'Obrigado!',
+          text: 'Avaliação enviada com sucesso!',
+          icon: 'success',
+          confirmButtonText: 'Fechar'
+        });
+        setMostrarModal(false); 
+        setComentario(''); 
       }
     } catch (erro) {
-      alert(erro.response?.data?.message || "Precisas de fazer Login para avaliar!");
+      // Substituído o alert() pelo Swal.fire()
+      Swal.fire({
+        title: 'Erro!',
+        text: erro.response?.data?.message || "Precisas de fazer Login para avaliar!",
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      });
     }
   };
 
   return (
     <>
-      {/* O Cartão do Jogo */}
       <div className="card h-100 shadow-sm border-0 bg-light" style={{ width: '18rem' }}>
         <Link to={`/jogo/${jogo.id}`}>
           <img 

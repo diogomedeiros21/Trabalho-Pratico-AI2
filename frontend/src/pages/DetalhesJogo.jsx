@@ -4,7 +4,6 @@ import { FaStar } from 'react-icons/fa';
 import api from '../services/api';
 
 function DetalhesJogo() {
-  // O useParams vai buscar o ID que está no endereço do browser
   const { id } = useParams(); 
   const [jogo, setJogo] = useState(null);
   const [carregando, setCarregando] = useState(true);
@@ -13,8 +12,11 @@ function DetalhesJogo() {
   useEffect(() => {
     const buscarDetalhes = async () => {
       try {
-        const resposta = await api.get(`/jogos/${id}`);
-        setJogo(resposta.data);
+        // Rota corrigida
+        const resposta = await api.get(`/jogos/get/${id}`);
+        // Como o teu backend usa findAll por ID, ele devolve um array na posição data.data[0]
+        const dadosJogo = resposta.data.data ? resposta.data.data[0] : resposta.data;
+        setJogo(dadosJogo);
         setCarregando(false);
       } catch (err) {
         console.error("Erro ao carregar detalhes:", err);
@@ -30,7 +32,6 @@ function DetalhesJogo() {
   if (erro) return <div className="container mt-5 alert alert-danger">{erro}</div>;
   if (!jogo) return <div className="container mt-5 alert alert-warning">Jogo não encontrado.</div>;
 
-  // Prepara a lista de comentários para ser renderizada
   const avaliacoes = jogo.Avaliacoes || jogo.Avaliacaos || [];
 
   return (
@@ -54,7 +55,7 @@ function DetalhesJogo() {
           </div>
           
           <h4 className="text-warning fw-bold mb-4">
-            <FaStar className="mb-1 me-1" /> {jogo.notaMedia} / 5.0
+            <FaStar className="mb-1 me-1" /> {jogo.notaMedia || "0.0"} / 5.0
           </h4>
 
           <h5 className="fw-bold text-dark">Sobre o jogo:</h5>

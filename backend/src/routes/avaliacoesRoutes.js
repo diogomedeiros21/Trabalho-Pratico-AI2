@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const avaliacoesController = require('../controllers/avaliacoesController');
+const { criarAvaliacao, listarMinhasAvaliacoes } = require('../controllers/avaliacoesController');
+const { checkToken } = require('../middlewares/authMiddleware'); 
 
-// Importa middleware
-const authMiddleware = require('../middlewares/authMiddleware'); 
+// Quando avalia um jogo
+router.post('/', checkToken, criarAvaliacao);
 
-router.post('/', authMiddleware.checkToken, avaliacoesController.criarAvaliacao);
+// Quando abre a página de perfil
+router.get('/', checkToken, listarMinhasAvaliacoes);
 
 module.exports = router;

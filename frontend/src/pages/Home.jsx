@@ -6,10 +6,7 @@ function Home() {
   const [jogos, setJogos] = useState([]);
   const [topJogos, setTopJogos] = useState([]);
   const [favoritosIds, setFavoritosIds] = useState([]); 
-  
-  // Estado da pesquisa
   const [termoPesquisa, setTermoPesquisa] = useState(''); 
-  
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
@@ -29,13 +26,14 @@ function Home() {
           }
         }
 
+        // Rotas corrigidas para bater certo com o jogoRoutes.js
         const [respostaJogos, respostaTop] = await Promise.all([
-          api.get('/jogos'),       // Corrigido de '/jogos/list' para '/jogos'
-          api.get('/jogos/top')    // Corrigido de '/jogos/top-semana' para '/jogos/top'
+          api.get('/jogos/list'),      
+          api.get('/jogos/top-semana')    
         ]);
         
-        setJogos(respostaJogos.data.jogos || respostaJogos.data);
-        setTopJogos(respostaTop.data.jogos || respostaTop.data || []);
+        setJogos(respostaJogos.data.data || respostaJogos.data); // Ajustado para ler o "data" que o teu backend envia
+        setTopJogos(respostaTop.data.data || respostaTop.data || []);
         setFavoritosIds(idsFavoritos);
         
         setCarregando(false);
@@ -49,7 +47,6 @@ function Home() {
     buscarDados();
   }, []);
 
-  // Cria uma lista nova só com os jogos que têm o texto da pesquisa
   const jogosFiltrados = jogos.filter((jogo) => 
     jogo.titulo.toLowerCase().includes(termoPesquisa.toLowerCase())
   );
@@ -66,7 +63,6 @@ function Home() {
   return (
     <div className="container mt-4 mb-5">
       
-        {/* SECÇÃO: TOP DA SEMANA */}
         {topJogos.length > 0 && (
           <div className="mb-5 p-4 bg-dark rounded-4 shadow-lg text-white">
             <h3 className="mb-4 fw-bold text-warning">🏆 Top da Semana</h3>
@@ -80,11 +76,9 @@ function Home() {
           </div>
         )}
 
-      {/* CABEÇALHO DO CATÁLOGO COM A BARRA DE PESQUISA */}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <h3 className="fw-bold text-dark mb-0">Catálogo Completo</h3>
         
-        {/* BARRA DE PESQUISA VISUAL */}
         <div className="input-group shadow-sm" style={{ maxWidth: '400px' }}>
           <span className="input-group-text bg-white border-end-0">🔍</span>
           <input 
@@ -97,7 +91,6 @@ function Home() {
         </div>
       </div>
       
-      {/* SECÇÃO: CATÁLOGO FILTRADO */}
       {jogos.length === 0 ? (
         <div className="alert alert-info text-center shadow-sm">
           Ainda não há jogos inseridos na plataforma.
