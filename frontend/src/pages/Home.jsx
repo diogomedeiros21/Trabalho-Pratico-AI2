@@ -5,7 +5,11 @@ import api from '../services/api';
 function Home() {
   const [jogos, setJogos] = useState([]);
   const [topJogos, setTopJogos] = useState([]);
-  const [favoritosIds, setFavoritosIds] = useState([]); // Guarda só os números de ID dos favoritos
+  const [favoritosIds, setFavoritosIds] = useState([]); 
+  
+  // 1. O ESTADO DA PESQUISA
+  const [termoPesquisa, setTermoPesquisa] = useState(''); 
+  
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
@@ -15,7 +19,6 @@ function Home() {
         const token = localStorage.getItem('token');
         let idsFavoritos = [];
 
-        // Se o utilizador estiver com Login feito, vai buscar os favoritos dele em silêncio
         if (token) {
           try {
             const respostaFavs = await api.get('/favoritos');
@@ -33,7 +36,7 @@ function Home() {
         
         setJogos(respostaJogos.data.jogos || respostaJogos.data);
         setTopJogos(respostaTop.data.jogos || respostaTop.data || []);
-        setFavoritosIds(idsFavoritos); // Guarda os IDs
+        setFavoritosIds(idsFavoritos);
         
         setCarregando(false);
       } catch (err) {
@@ -45,6 +48,11 @@ function Home() {
 
     buscarDados();
   }, []);
+
+  // 2. A LÓGICA DO FILTRO: Cria uma lista nova só com os jogos que têm o texto da pesquisa
+  const jogosFiltrados = jogos.filter((jogo) => 
+    jogo.titulo.toLowerCase().includes(termoPesquisa.toLowerCase())
+  );
 
   if (carregando) {
     return (
@@ -58,13 +66,13 @@ function Home() {
   return (
     <div className="container mt-4 mb-5">
       
+      {/* SECÇÃO: TOP DA SEMANA */}
       {topJogos.length > 0 && (
         <div className="mb-5 p-4 bg-dark rounded-4 shadow-lg text-white">
           <h3 className="mb-4 fw-bold text-warning">🏆 Top da Semana</h3>
           <div className="row g-4">
             {topJogos.map((jogo) => (
               <div className="col-md-4" key={`top-${jogo.id}`}>
-                {/* Verifica se o ID deste jogo está na lista dos teus favoritos */}
                 <JogoCard jogo={jogo} favoritoInicial={favoritosIds.includes(jogo.id)} />
               </div>
             ))}
@@ -72,17 +80,37 @@ function Home() {
         </div>
       )}
 
-      <h3 className="mb-4 fw-bold text-dark">Catálogo Completo</h3>
+      {/* CABEÇALHO DO CATÁLOGO COM A BARRA DE PESQUISA */}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <h3 className="fw-bold text-dark mb-0">Catálogo Completo</h3>
+        
+        {/* 3. A NOSSA BARRA DE PESQUISA VISUAL */}
+        <div className="input-group shadow-sm" style={{ maxWidth: '400px' }}>
+          <span className="input-group-text bg-white border-end-0">🔍</span>
+          <input 
+            type="text" 
+            className="form-control border-start-0 ps-0" 
+            placeholder="Pesquisar por nome..." 
+            value={termoPesquisa}
+            onChange={(e) => setTermoPesquisa(e.target.value)}
+          />
+        </div>
+      </div>
       
+      {/* SECÇÃO: CATÁLOGO FILTRADO */}
       {jogos.length === 0 ? (
         <div className="alert alert-info text-center shadow-sm">
           Ainda não há jogos inseridos na plataforma.
         </div>
+      ) : jogosFiltrados.length === 0 ? (
+        <div className="alert alert-warning text-center shadow-sm">
+          Não encontrámos nenhum jogo com o nome "<strong>{termoPesquisa}</strong>".
+        </div>
       ) : (
         <div className="row g-4">
-          {jogos.map((jogo) => (
+          {/* Agora fazemos o MAP nos jogosFiltrados e não na lista inteira */}
+          {jogosFiltrados.map((jogo) => (
             <div className="col-md-4" key={jogo.id}>
-              {/* Faz a mesma verificação aqui! */}
               <JogoCard jogo={jogo} favoritoInicial={favoritosIds.includes(jogo.id)} />
             </div>
           ))}

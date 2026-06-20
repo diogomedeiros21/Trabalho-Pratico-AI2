@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import JogoList from './view/JogoList';
 import Perfil from './pages/Perfil';
+import DetalhesJogo from './pages/DetalhesJogo'; // Adiciona no topo
+
 
 function App() {
   return (
@@ -17,6 +19,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/jogo/:id" element={<DetalhesJogo />} />
         <Route path="/register" element={<Register />} />
         <Route path="/jogos/list" element={<JogoList />} />
       </Routes>

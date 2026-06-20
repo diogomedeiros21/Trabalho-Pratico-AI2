@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaHeart, FaRegHeart, FaStar } from 'react-icons/fa';
 import api from '../services/api';
+import { Link } from 'react-router-dom';
 
 // 1. Adicionamos o 'favoritoInicial' (por defeito é false)
 function JogoCard({ jogo, favoritoInicial = false }) {
@@ -49,15 +50,20 @@ function JogoCard({ jogo, favoritoInicial = false }) {
     <>
       {/* O Cartão do Jogo */}
       <div className="card h-100 shadow-sm border-0 bg-light" style={{ width: '18rem' }}>
-        <img 
-          src={jogo.imagem || "https://via.placeholder.com/300x200?text=Capa+do+Jogo"} 
-          className="card-img-top rounded-top" 
-          alt="Capa do jogo" 
-          style={{ height: '200px', objectFit: 'cover' }} 
-        />
+        {/* A imagem agora é um link clicável */}
+        <Link to={`/jogo/${jogo.id}`}>
+          <img 
+           src={jogo.imagem} 
+          className="card-img-top" 
+          alt={jogo.titulo} 
+          style={{ cursor: 'pointer', objectFit: 'cover', height: '200px' }} 
+           />
+          </Link>
         
         <div className="card-body d-flex flex-column">
-          <h5 className="card-title fw-bold text-truncate">{jogo.titulo}</h5>
+          <Link to={`/jogo/${jogo.id}`} className="text-decoration-none text-dark">
+            <h5 className="card-title fw-bold mb-1">{jogo.titulo}</h5>
+          </Link>
           
           {/* Tenta mostrar a categoria se o backend do Medeiros a enviar */}
           <span className="badge bg-secondary mb-3 w-50">
