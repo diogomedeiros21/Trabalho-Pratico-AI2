@@ -3,14 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 function Navbar() {
   const navigate = useNavigate();
   
-  // Verifica se existe um Token guardado no cofre do navegador
+  // Verifica se existe Token e qual a role do utilizador
   const isAuthenticated = !!localStorage.getItem('token');
+  const userRole = localStorage.getItem('role'); // Vamos ler a role que guardaste no login
 
   const handleLogout = () => {
-    // Apaga o Token (destrói a sessão)
+    // Apaga tudo o que é da sessão
     localStorage.removeItem('token');
+    localStorage.removeItem('role'); // MUITO IMPORTANTE: apagar a role também!
     
-    // Manda o utilizador de volta para o Login e força a página a atualizar
     navigate('/login');
     window.location.reload(); 
   };
@@ -28,7 +29,15 @@ function Navbar() {
           
           {isAuthenticated ? (
             <>
+              {/* Esta parte só aparece se for Admin */}
+              {userRole === 'admin' && (
+                <Link className="text-warning text-decoration-none fw-bold" to="/admin/criar">
+                  + Adicionar Jogo
+                </Link>
+              )}
+
               <Link className="text-light text-decoration-none fw-semibold" to="/perfil">O Meu Perfil</Link>
+              
               <button onClick={handleLogout} className="btn btn-outline-danger btn-sm fw-bold">
                 Sair
               </button>
@@ -40,7 +49,6 @@ function Navbar() {
             </>
           )}
         </div>
-
       </div>
     </nav>
   );

@@ -21,7 +21,10 @@ function Login() {
         // Guarda o token no cofre do navegador (localStorage)
         localStorage.setItem('token', resposta.data.token);
         
-        console.log('Login efetuado com sucesso! Token guardado.');
+        // NOVO: Guarda a role que vem do backend
+        localStorage.setItem('role', resposta.data.role);
+        
+        console.log('Login efetuado com sucesso! Token e role guardados.');
         
         // Redireciona e força a página a atualizar para a Navbar detetar o Token instantaneamente
         window.location.href = '/';

@@ -8,6 +8,7 @@ import JogoAdd from './view/JogoAdd';
 import JogoEdit from './view/JogoEdit';
 import Perfil from './pages/Perfil';
 import DetalhesJogo from './pages/DetalhesJogo';
+import AdicionarJogo from './pages/AdicionarJogo';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       {/* Onde as páginas vão ser renderizadas */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/admin/criar" element={<AdicionarJogo />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/login" element={<Login />} />
         <Route path="/jogo/:id" element={<DetalhesJogo />} />
