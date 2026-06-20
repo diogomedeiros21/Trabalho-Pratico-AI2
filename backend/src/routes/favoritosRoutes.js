@@ -1,9 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const favoritosController = require('../controllers/favoritosController');
-const authMiddleware = require('../middlewares/authMiddleware'); 
 
-// Rota protegida: Clica no coraçãozinho para adicionar ou remover
-router.post('/', authMiddleware.checkToken, favoritosController.adicionarOuRemover);
+const { adicionarFavorito, listarFavoritos } = require('../controllers/favoritosController');
+const { checkToken } = require('../middlewares/authMiddleware');
+
+// Quando o React faz POST (clica no coração), vai para o adicionarFavorito
+router.post('/', checkToken, adicionarFavorito);
+
+// Quando o React faz GET (abre o perfil), vai para o listarFavoritos
+router.get('/', checkToken, listarFavoritos);
 
 module.exports = router;

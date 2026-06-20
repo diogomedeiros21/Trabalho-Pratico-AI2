@@ -1,33 +1,48 @@
 const Avaliacao = require('../models/Avaliacao');
 
-const avaliacoesController = {};
-
-// Função para dar uma nota a um jogo
-avaliacoesController.criarAvaliacao = async (req, res) => {
+// FUNÇÃO: Criar ou Atualizar a Avaliação
+const criarAvaliacao = async (req, res) => {
   try {
-    const { nota, comentario, jogoId } = req.body;
-    
-    // A magia da tua Fase 2: 
-    // O ID do utilizador já vem extraído do Token, é super seguro!
-    const userId = req.user.id; 
+    // 1. Quem está a avaliar e o que está a avaliar?
+    const userId = req.user.id; // Vem do token de segurança
+    const { jogoId, nota, comentario } = req.body;
 
-    // Validação básica de segurança
-    if (!nota || !jogoId) {
-      return res.status(400).json({ success: false, message: 'Falta a nota ou o ID do Jogo.' });
-    }
-
-    // Gravar na Base de Dados
-    const novaAvaliacao = await Avaliacao.create({
-      nota,
-      comentario,
-      jogoId,
-      userId
+    // 2. Procura na base de dados se já existe uma avaliação deste utilizador para este jogo
+    const avaliacaoExistente = await Avaliacao.findOne({
+      where: { userId: userId, jogoId: jogoId }
     });
 
-    res.status(201).json({ success: true, message: 'Avaliação enviada com sucesso!', data: novaAvaliacao });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    if (avaliacaoExistente) {
+      // 3. Se a avaliação já existe, editamos os valores e guardamos
+      avaliacaoExistente.nota = nota;
+      avaliacaoExistente.comentario = comentario;
+      await avaliacaoExistente.save();
+
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Avaliação atualizada com sucesso!' 
+      });
+    } else {
+      // 4. Se não existe, criamos um registo novo
+      const novaAvaliacao = await Avaliacao.create({
+        userId,
+        jogoId,
+        nota,
+        comentario
+      });
+
+      return res.status(201).json({ 
+        success: true, 
+        message: 'Avaliação enviada com sucesso!' 
+      });
+    }
+  } catch (erro) {
+    console.error("Erro ao avaliar:", erro);
+    res.status(500).json({ success: false, message: 'Erro interno ao guardar a avaliação.' });
   }
 };
 
-module.exports = avaliacoesController;
+module.exports = {
+  criarAvaliacao
+  // (Põe aqui outras funções se já as tinhas no ficheiro)
+};

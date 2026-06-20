@@ -4,6 +4,7 @@ const Jogo = require('../models/Jogo');
 const Categoria = require('../models/Categoria');
 const Avaliacao = require('../models/Avaliacao');
 
+<<<<<<< HEAD
 // ==========================================
 // CRUD COMPLETO
 // ==========================================
@@ -33,6 +34,83 @@ const obterJogo = async (req, res) => {
 };
 
 // Novo jogo
+=======
+// FUNÇÃO AUXILIAR: Calcular média
+const calcularMedia = (avaliacoes) => {
+  if (!avaliacoes || avaliacoes.length === 0) return "0.0";
+  const soma = avaliacoes.reduce((total, avaliacao) => total + Number(avaliacao.nota), 0);
+  const media = soma / avaliacoes.length;
+  return media.toFixed(1);
+};
+
+// 1. Listar todos os jogos
+const listarJogos = async (req, res) => {
+  try {
+    const jogos = await Jogo.findAll({ 
+      include: [{ model: Categoria }, { model: Avaliacao }] 
+    });
+
+    const jogosFormatados = jogos.map(jogo => {
+      const jogoJSON = jogo.toJSON();
+      const listaAvaliacoes = jogoJSON.Avaliacoes || jogoJSON.Avaliacaos || []; 
+      jogoJSON.notaMedia = calcularMedia(listaAvaliacoes);
+      return jogoJSON;
+    });
+
+    res.json(jogosFormatados);
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ mensagem: 'Erro ao procurar jogos' });
+  }
+};
+
+// 2. O Top da Semana
+const listarTopSemana = async (req, res) => {
+  try {
+    const jogos = await Jogo.findAll({
+      include: [{ model: Categoria }, { model: Avaliacao }]
+    });
+
+    const jogosFormatados = jogos.map(jogo => {
+      const jogoJSON = jogo.toJSON();
+      const listaAvaliacoes = jogoJSON.Avaliacoes || jogoJSON.Avaliacaos || [];
+      jogoJSON.notaMedia = calcularMedia(listaAvaliacoes);
+      return jogoJSON;
+    });
+
+    jogosFormatados.sort((a, b) => parseFloat(b.notaMedia) - parseFloat(a.notaMedia));
+    res.json(jogosFormatados.slice(0, 3));
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ mensagem: 'Erro ao procurar o Top da Semana' });
+  }
+};
+
+// 3. A NOVA FUNÇÃO: Obter apenas um jogo pelo ID
+const obterJogo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const jogo = await Jogo.findByPk(id, {
+      include: [{ model: Categoria }, { model: Avaliacao }]
+    });
+
+    if (!jogo) {
+      return res.status(404).json({ mensagem: 'Jogo não encontrado' });
+    }
+
+    const jogoJSON = jogo.toJSON();
+    const listaAvaliacoes = jogoJSON.Avaliacoes || jogoJSON.Avaliacaos || [];
+    jogoJSON.notaMedia = calcularMedia(listaAvaliacoes);
+
+    res.json(jogoJSON);
+  } catch (erro) {
+    console.error("Erro ao buscar detalhes do jogo:", erro);
+    res.status(500).json({ mensagem: 'Erro interno ao buscar o jogo' });
+  }
+};
+
+// 4. Criar um novo jogo
+>>>>>>> c39f7f7dcc475e7f85674a23d61bfdfddb903a63
 const criarJogo = async (req, res) => {
   try {
     const { titulo, descricao, imagem, categoriaId } = req.body;
@@ -43,8 +121,13 @@ const criarJogo = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 // Editar dados de um jogo
 const atualizarJogo = async (req, res) => {
+=======
+// 5. Eliminar um jogo
+const eliminarJogo = async (req, res) => {
+>>>>>>> c39f7f7dcc475e7f85674a23d61bfdfddb903a63
   try {
     const { id } = req.params;
     const { titulo, descricao, imagem, categoriaId } = req.body;
@@ -58,6 +141,7 @@ const atualizarJogo = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 // Apagar um jogo
 const eliminarJogo = async (req, res) => {
   try {
@@ -106,3 +190,7 @@ const topDaSemana = async (req, res) => {
 module.exports = { 
     listarJogos, obterJogo, criarJogo, atualizarJogo, eliminarJogo, topDaSemana 
 };
+=======
+// AQUI ESTAVA O PROBLEMA: Garantir que a função 'obterJogo' é exportada!
+module.exports = { listarJogos, listarTopSemana, obterJogo, criarJogo, eliminarJogo };
+>>>>>>> c39f7f7dcc475e7f85674a23d61bfdfddb903a63

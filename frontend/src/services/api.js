@@ -1,18 +1,18 @@
 import axios from 'axios';
 
-// Cria a instância base do Axios a apontar para o teu Backend
+// Cria a ligação base
 const api = axios.create({
-  baseURL: 'http://localhost:3000', 
+  baseURL: 'http://localhost:3000' // Confirma se esta é a porta do teu backend
 });
 
-// "O Segurança VIP" - Intercetor de Pedidos
-// Antes de qualquer pedido sair do frontend, ele verifica se tens o bilhete (Token)
+// Este "interceptor" funciona como um segurança na fronteira.
+// Antes de qualquer pedido sair do React para o Node, ele verifica se há um token
+// e coloca-o no cabeçalho (Headers) da requisição.
 api.interceptors.request.use((config) => {
-  // Lê o token que ficou guardado no navegador quando o utilizador fez login
-  const token = localStorage.getItem('token'); 
+  const token = localStorage.getItem('token');
   
   if (token) {
-    // Se existir token, espeta-o no cabeçalho de segurança
+    // Adiciona o token no formato padrão que o JWT espera
     config.headers.Authorization = `Bearer ${token}`;
   }
   

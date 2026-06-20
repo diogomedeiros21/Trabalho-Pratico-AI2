@@ -15,7 +15,9 @@ function App() {
       {/* Onde as páginas vão ser renderizadas */}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/perfil" element={<Perfil />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/jogo/:id" element={<DetalhesJogo />} />
         <Route path="/register" element={<Register />} />
         <Route path="/jogos/list" element={<JogoList />} />
         <Route path="/jogos/add" element={<JogoAdd />} />
