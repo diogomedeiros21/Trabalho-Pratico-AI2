@@ -1,6 +1,7 @@
 const Favorito = require('../models/Favorito');
 const Jogo = require('../models/Jogo');
 const User = require('../models/User');
+const Avaliacao = require('../models/Avaliacao');
 
 // Adicionar ou Remover dos Favoritos 
 const adicionarFavorito = async (req, res) => {
@@ -14,11 +15,11 @@ const adicionarFavorito = async (req, res) => {
     });
 
     if (favoritoExistente) {
-      // Se já lá está, o clique serve para remover 
+      // Se já lá está, remove
       await favoritoExistente.destroy();
       return res.json({ success: true, message: 'Removido dos favoritos.' });
     } else {
-      // Se não está, guarda na base de dados (Dar Like)
+      // Se não está, guarda
       await Favorito.create({ userId, jogoId });
       return res.status(201).json({ success: true, message: 'Adicionado aos favoritos!' });
     }
@@ -28,7 +29,7 @@ const adicionarFavorito = async (req, res) => {
   }
 };
 
-// Listar Favoritos 
+// Listar Favoritos com cálculo de média
 const listarFavoritos = async (req, res) => {
   try {
     const userId = req.user.id; 
@@ -44,7 +45,20 @@ const listarFavoritos = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Utilizador não encontrado.' });
     }
 
-    res.json({ success: true, favoritos: utilizador.Jogos || [] });
+    // Calculamos a nota para cada jogo favorito
+    const favoritosComNota = await Promise.all(utilizador.Jogos.map(async (jogo) => {
+      const avaliacoes = await Avaliacao.findAll({ where: { jogoId: jogo.id } });
+      
+      const total = avaliacoes.reduce((acc, curr) => acc + curr.nota, 0);
+      const media = avaliacoes.length > 0 ? (total / avaliacoes.length).toFixed(1) : "0.0";
+
+      return {
+        ...jogo.toJSON(),
+        notaMedia: media
+      };
+    }));
+
+    res.json({ success: true, favoritos: favoritosComNota });
 
   } catch (erro) {
     console.error("Erro ao buscar favoritos:", erro);
@@ -52,6 +66,7 @@ const listarFavoritos = async (req, res) => {
   }
 };
 
+// EXPORTAÇÃO CORRETA (Isto resolve o teu erro de 'undefined')
 module.exports = {
   adicionarFavorito,
   listarFavoritos

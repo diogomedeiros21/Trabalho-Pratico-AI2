@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const checkAdmin = require('../middleware/authAdmin');
-const { criarJogo, eliminarJogo } = require('../controllers/jogoController');
 
-// Importação correta: Certifica-te que todos estes nomes estão dentro das chavetas {}
+// Importa o middleware de segurança (ajusta o caminho se necessário)
+const { checkToken, isAdmin } = require('../middlewares/authMiddleware');
+
+// Importa as funções do controlador numa única linha
 const { 
   listarJogos, 
   listarTopSemana, 
@@ -16,8 +17,9 @@ const {
 router.get('/top', listarTopSemana);
 router.get('/:id', obterJogo);
 router.get('/', listarJogos);
-router.post('/', checkAdmin, criarJogo);
-router.delete('/:id', checkAdmin, eliminarJogo);
 
+// Usamos o checkToken primeiro e o isAdmin depois para proteger as rotas
+router.post('/', checkToken, isAdmin, criarJogo);
+router.delete('/:id', checkToken, isAdmin, eliminarJogo);
 
 module.exports = router;
