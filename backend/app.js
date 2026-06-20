@@ -1,25 +1,25 @@
 const express = require('express');
 const cors = require('cors');
-const sequelize = require('./config/database');
+const sequelize = require('./src/config/database');
 
 // ==========================================
 // 1. IMPORTAÇÕES DE ROTAS
 // ==========================================
-const authRoutes = require('./routes/authRoutes');
-const avaliacoesRoutes = require('./routes/avaliacoesRoutes');
-const favoritosRoutes = require('./routes/favoritosRoutes');
-const jogoRoutes = require('./routes/jogoRoutes');
-const categoriaRoutes = require('./routes/categoriaRoutes');
+const authRoutes = require('./src/routes/authRoutes');
+const avaliacoesRoutes = require('./src/routes/avaliacoesRoutes');
+const favoritosRoutes = require('./src/routes/favoritosRoutes');
+const jogoRoutes = require('./src/routes/jogoRoutes');
+const categoriaRoutes = require('./src/routes/categoriaRoutes');
 
 // ==========================================
 // 2. IMPORTAÇÕES DOS MODELOS
 // ==========================================
-const User = require('./models/User');
-const Avaliacao = require('./models/Avaliacao');
-const Favorito = require('./models/Favorito');
+const User = require('./src/models/User');
+const Avaliacao = require('./src/models/Avaliacao');
+const Favorito = require('./src/models/Favorito');
 
-const Jogo = require('./models/Jogo');
-const Categoria = require('./models/Categoria');
+const Jogo = require('./src/models/Jogo');
+const Categoria = require('./src/models/Categoria');
 
 const app = express();
 

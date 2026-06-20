@@ -29,12 +29,15 @@ function Navbar() {
           <Link className="text-light text-decoration-none" to="/">Catálogo</Link>
           
           {isAuthenticated ? (
-            // O que aparece SE ESTIVER LOGADO:
-            <button onClick={handleLogout} className="btn btn-outline-danger btn-sm fw-bold">
-              Sair
-            </button>
+            // O que aparece SE ESTIVER LOGADO (Perfil + Sair):
+            <>
+              <Link className="text-light text-decoration-none fw-semibold" to="/perfil">O Meu Perfil</Link>
+              <button onClick={handleLogout} className="btn btn-outline-danger btn-sm fw-bold">
+                Sair
+              </button>
+            </>
           ) : (
-            // O que aparece SE NÃO ESTIVER LOGADO:
+            // O que aparece SE NÃO ESTIVER LOGADO (Entrar + Registar):
             <>
               <Link className="text-light text-decoration-none" to="/login">Entrar</Link>
               <Link className="btn btn-outline-light btn-sm" to="/register">Registar</Link>
