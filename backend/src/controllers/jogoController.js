@@ -1,40 +1,7 @@
-const { Sequelize } = require('sequelize');
-const sequelize = require('../config/database');
 const Jogo = require('../models/Jogo');
 const Categoria = require('../models/Categoria');
 const Avaliacao = require('../models/Avaliacao');
 
-<<<<<<< HEAD
-// ==========================================
-// CRUD COMPLETO
-// ==========================================
-
-// Listar todos
-const listarJogos = async (req, res) => {
-  try {
-    const jogos = await Jogo.findAll({ include: Categoria });
-    res.json({ success: true, data: jogos });
-  } catch (erro) {
-    res.status(500).json({ success: false, message: 'Erro ao procurar jogos' });
-  }
-};
-
-// LER (Por ID): Para preencher o formulário de edição
-const obterJogo = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const jogo = await Jogo.findAll({ 
-        where: { id: id }, 
-        include: [Categoria] 
-    });
-    res.json({ success: true, data: jogo });
-  } catch (erro) {
-    res.status(500).json({ success: false, message: 'Erro ao obter jogo' });
-  }
-};
-
-// Novo jogo
-=======
 // FUNÇÃO AUXILIAR: Calcular média
 const calcularMedia = (avaliacoes) => {
   if (!avaliacoes || avaliacoes.length === 0) return "0.0";
@@ -110,87 +77,46 @@ const obterJogo = async (req, res) => {
 };
 
 // 4. Criar um novo jogo
->>>>>>> c39f7f7dcc475e7f85674a23d61bfdfddb903a63
 const criarJogo = async (req, res) => {
   try {
     const { titulo, descricao, imagem, categoriaId } = req.body;
     const novoJogo = await Jogo.create({ titulo, descricao, imagem, categoriaId });
-    res.status(201).json({ success: true, data: novoJogo, message: "Jogo criado!" });
+    res.status(201).json(novoJogo);
   } catch (erro) {
-    res.status(500).json({ success: false, message: 'Erro ao criar jogo' });
+    res.status(500).json({ mensagem: 'Erro ao criar jogo' });
   }
 };
 
-<<<<<<< HEAD
-// Editar dados de um jogo
+// 4.5. Atualizar um jogo existente
 const atualizarJogo = async (req, res) => {
-=======
-// 5. Eliminar um jogo
-const eliminarJogo = async (req, res) => {
->>>>>>> c39f7f7dcc475e7f85674a23d61bfdfddb903a63
   try {
     const { id } = req.params;
     const { titulo, descricao, imagem, categoriaId } = req.body;
-    const atualizado = await Jogo.update(
-      { titulo, descricao, imagem, categoriaId },
-      { where: { id: id } }
-    );
-    res.json({ success: true, data: atualizado, message: "Atualizado com sucesso" });
-  } catch (erro) {
-    res.status(500).json({ success: false, message: 'Erro ao atualizar' });
-  }
-};
 
-<<<<<<< HEAD
-// Apagar um jogo
-const eliminarJogo = async (req, res) => {
-  try {
-    const { id } = req.params; //[cite: 8]
-    await Jogo.destroy({ where: { id: id } });
-    res.json({ success: true, message: 'Jogo eliminado com sucesso!' });
-  } catch (erro) {
-    res.status(500).json({ success: false, message: 'Erro ao eliminar jogo' });
-  }
-};
+    const jogo = await Jogo.findByPk(id);
+    if (!jogo) {
+      return res.status(404).json({ mensagem: 'Jogo não encontrado' });
+    }
 
-// ==========================================
-// TOP DA SEMANA
-// ==========================================
-const topDaSemana = async (req, res) => {
-  try {
-    const topJogos = await Jogo.findAll({
-      attributes: {
-        // Usamos as funções matemáticas do Sequelize para calcular a média
-        include: [
-          [sequelize.fn('AVG', sequelize.col('Avaliacaos.nota')), 'mediaAvaliacoes'] 
-        ]
-      },
-      include: [
-        {
-          model: Avaliacao,
-          attributes: [], 
-        },
-        {
-          model: Categoria,
-          attributes: ['nome']
-        }
-      ],
-      group: ['Jogo.id', 'Categoria.id'], // Obrigatório agrupar ao usar o AVG
-      order: [[sequelize.col('mediaAvaliacoes'), 'DESC']], // Ordena da maior média para a menor
-      limit: 5 // Traz apenas o Top 5
-    });
-
-    res.json({ success: true, data: topJogos });
+    await jogo.update({ titulo, descricao, imagem, categoriaId });
+    res.json(jogo);
   } catch (erro) {
     console.error(erro);
-    res.status(500).json({ success: false, message: 'Erro ao calcular o Top da Semana' });
+    res.status(500).json({ mensagem: 'Erro ao atualizar jogo' });
   }
 };
 
-module.exports = { 
-    listarJogos, obterJogo, criarJogo, atualizarJogo, eliminarJogo, topDaSemana 
+// 5. Eliminar um jogo
+const eliminarJogo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Jogo.destroy({ where: { id } });
+    res.json({ mensagem: 'Jogo eliminado com sucesso!' });
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao eliminar jogo' });
+  }
 };
-=======
+
 // AQUI ESTAVA O PROBLEMA: Garantir que a função 'obterJogo' é exportada!
 module.exports = { listarJogos, listarTopSemana, obterJogo, criarJogo, eliminarJogo };
->>>>>>> c39f7f7dcc475e7f85674a23d61bfdfddb903a63
+module.exports = { listarJogos, listarTopSemana, obterJogo, criarJogo, atualizarJogo, eliminarJogo };

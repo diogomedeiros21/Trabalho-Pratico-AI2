@@ -1,16 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const jogoController = require('../controllers/jogoController');
-const Categoria = require('../models/Categoria');
 
-// Rotas do CRUD
-router.get('/list', jogoController.listarJogos);
-router.get('/get/:id', jogoController.obterJogo); 
-router.post('/create', jogoController.criarJogo);
-router.post('/update/:id', jogoController.atualizarJogo); 
-router.post('/delete/:id', jogoController.eliminarJogo); 
+// Importação correta: Certifica-te que todos estes nomes estão dentro das chavetas {}
+const { 
+  listarJogos, 
+  listarTopSemana, 
+  obterJogo, 
+  criarJogo, 
+  eliminarJogo 
+} = require('../controllers/jogoController');
 
-// Rota Top da Semana
-router.get('/top-semana', jogoController.topDaSemana);
+// Rotas
+router.get('/top', listarTopSemana);
+router.get('/:id', obterJogo);
+router.get('/', listarJogos);
+router.post('/', criarJogo);
+router.delete('/:id', eliminarJogo);
 
 module.exports = router;

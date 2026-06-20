@@ -30,8 +30,8 @@ function Home() {
         }
 
         const [respostaJogos, respostaTop] = await Promise.all([
-          api.get('/jogos'),
-          api.get('/jogos/top')
+          api.get('/jogos'),       // Corrigido de '/jogos/list' para '/jogos'
+          api.get('/jogos/top')    // Corrigido de '/jogos/top-semana' para '/jogos/top'
         ]);
         
         setJogos(respostaJogos.data.jogos || respostaJogos.data);
@@ -66,19 +66,19 @@ function Home() {
   return (
     <div className="container mt-4 mb-5">
       
-      {/* SECÇÃO: TOP DA SEMANA */}
-      {topJogos.length > 0 && (
-        <div className="mb-5 p-4 bg-dark rounded-4 shadow-lg text-white">
-          <h3 className="mb-4 fw-bold text-warning">🏆 Top da Semana</h3>
-          <div className="row g-4">
-            {topJogos.map((jogo) => (
-              <div className="col-md-4" key={`top-${jogo.id}`}>
-                <JogoCard jogo={jogo} favoritoInicial={favoritosIds.includes(jogo.id)} />
-              </div>
-            ))}
+        {/* SECÇÃO: TOP DA SEMANA */}
+        {topJogos.length > 0 && (
+          <div className="mb-5 p-4 bg-dark rounded-4 shadow-lg text-white">
+            <h3 className="mb-4 fw-bold text-warning">🏆 Top da Semana</h3>
+            <div className="row g-4">
+              {topJogos.map((jogo) => (
+                <div className="col-md-4" key={`top-${jogo.id}`}>
+                  <JogoCard jogo={jogo} favoritoInicial={favoritosIds.includes(jogo.id)} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* CABEÇALHO DO CATÁLOGO COM A BARRA DE PESQUISA */}
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
