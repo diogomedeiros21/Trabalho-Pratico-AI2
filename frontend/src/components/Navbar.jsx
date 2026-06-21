@@ -14,11 +14,18 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-dark bg-dark py-3">
+    // Alterado py-3 para py-1 para a barra ficar compacta mesmo com logo grande
+    <nav className="navbar navbar-dark bg-dark py-1">
       <div className="container d-flex justify-content-between align-items-center">
         
-        <Link className="navbar-brand fw-bold text-white fs-4" to="/">
-          🎮 MundoGaming
+        <Link className="navbar-brand fw-bold text-white fs-4 d-flex align-items-center" to="/">
+          {/* Logo aumentado para 60px */}
+          <img 
+            src="/logo.png" 
+            alt="MundoGaming Logo" 
+            style={{ width: '60px', height: '60px', marginRight: '16px', objectFit: 'contain' }} 
+          />
+          MundoGaming
         </Link>
         
         <div className="d-flex align-items-center gap-3">

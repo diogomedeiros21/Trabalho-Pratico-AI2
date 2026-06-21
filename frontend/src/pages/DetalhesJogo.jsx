@@ -12,9 +12,7 @@ function DetalhesJogo() {
   useEffect(() => {
     const buscarDetalhes = async () => {
       try {
-        // Rota corrigida
         const resposta = await api.get(`/jogos/get/${id}`);
-        // Como o teu backend usa findAll por ID, ele devolve um array na posição data.data[0]
         const dadosJogo = resposta.data.data ? resposta.data.data[0] : resposta.data;
         setJogo(dadosJogo);
         setCarregando(false);
@@ -28,7 +26,7 @@ function DetalhesJogo() {
     buscarDetalhes();
   }, [id]);
 
-  if (carregando) return <div className="container mt-5 text-center"><div className="spinner-border text-primary"></div></div>;
+  if (carregando) return <div className="container mt-5 text-center text-light"><div className="spinner-border" style={{color: 'var(--accent)'}}></div></div>;
   if (erro) return <div className="container mt-5 alert alert-danger">{erro}</div>;
   if (!jogo) return <div className="container mt-5 alert alert-warning">Jogo não encontrado.</div>;
 
@@ -36,48 +34,49 @@ function DetalhesJogo() {
 
   return (
     <div className="container mt-5 mb-5">
-      <Link to="/" className="btn btn-outline-secondary mb-4">← Voltar ao Catálogo</Link>
+      <Link to="/" className="btn btn-outline-light mb-4">← Voltar ao Catálogo</Link>
       
-      <div className="row bg-white p-4 rounded-4 shadow-sm border">
+      {/* Container principal com o novo estilo de cartão suave */}
+      <div className="row p-4 p-md-5 rounded-4 shadow-sm" style={{ backgroundColor: 'var(--card-bg)', border: '1px solid rgba(255,255,255,0.05)' }}>
         <div className="col-md-5 text-center mb-4 mb-md-0">
           <img 
             src={jogo.imagem} 
             alt={jogo.titulo} 
-            className="img-fluid rounded shadow" 
+            className="img-fluid rounded-4 shadow" 
             style={{ maxHeight: '400px', objectFit: 'cover' }}
           />
         </div>
 
         <div className="col-md-7">
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <h1 className="fw-bold mb-0">{jogo.titulo}</h1>
-            <span className="badge bg-secondary fs-6">{jogo.Categoria?.nome || 'Sem Categoria'}</span>
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h1 className="fw-bold mb-0 text-white">{jogo.titulo}</h1>
+            <span className="badge px-3 py-2">{jogo.Categoria?.nome || 'Sem Categoria'}</span>
           </div>
           
           <h4 className="text-warning fw-bold mb-4">
             <FaStar className="mb-1 me-1" /> {jogo.notaMedia || "0.0"} / 5.0
           </h4>
 
-          <h5 className="fw-bold text-dark">Sobre o jogo:</h5>
-          <p className="text-muted" style={{ lineHeight: '1.6' }}>
+          <h5 className="fw-bold text-white">Sobre o jogo:</h5>
+          <p className="mb-4" style={{ color: 'var(--text-soft)', lineHeight: '1.6' }}>
             {jogo.descricao || "Nenhuma descrição disponível para este jogo."}
           </p>
 
-          <hr className="my-4" />
+          <hr className="my-4 border-0" style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.05)' }} />
 
-          <h5 className="fw-bold mb-3">O que a comunidade diz:</h5>
+          <h5 className="fw-bold mb-3 text-white">O que a comunidade diz:</h5>
           
           {avaliacoes.length === 0 ? (
-            <p className="text-muted fst-italic">Ainda não há comentários. Sê o primeiro a avaliar!</p>
+            <p className="fst-italic" style={{ color: 'var(--text-soft)' }}>Ainda não há comentários. Sê o primeiro a avaliar!</p>
           ) : (
             <div className="d-flex flex-column gap-3">
               {avaliacoes.map((av) => (
-                <div key={av.id} className="bg-light p-3 rounded border">
+                <div key={av.id} className="p-3 rounded-3" style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <div className="d-flex justify-content-between mb-2">
-                    <span className="fw-bold text-primary">Avaliação de Utilizador</span>
+                    <span className="fw-bold" style={{ color: 'var(--accent)' }}>Avaliação de Utilizador</span>
                     <span className="text-warning fw-bold"><FaStar className="mb-1"/> {av.nota}.0</span>
                   </div>
-                  <p className="mb-0 text-dark">{av.comentario}</p>
+                  <p className="mb-0 text-white">{av.comentario}</p>
                 </div>
               ))}
             </div>

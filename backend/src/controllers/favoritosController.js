@@ -2,6 +2,7 @@ const Favorito = require('../models/Favorito');
 const Jogo = require('../models/Jogo');
 const User = require('../models/User');
 const Avaliacao = require('../models/Avaliacao');
+const Categoria = require('../models/Categoria'); // 1. IMPORTANTE: Adicionado o import da Categoria!
 
 // Adicionar ou Remover dos Favoritos 
 const adicionarFavorito = async (req, res) => {
@@ -37,7 +38,9 @@ const listarFavoritos = async (req, res) => {
     const utilizador = await User.findByPk(userId, {
       include: {
         model: Jogo,
-        through: { attributes: [] }
+        through: { attributes: [] },
+        // 2. A MAGIA AQUI: O Jogo agora traz a Categoria atrás dele!
+        include: [{ model: Categoria, as: 'Categoria' }]
       }
     });
 

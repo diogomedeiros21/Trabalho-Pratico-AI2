@@ -8,6 +8,7 @@ import DetalhesJogo from './pages/DetalhesJogo';
 import JogoList from './view/JogoList';
 import JogoAdd from './view/JogoAdd';
 import JogoEdit from './view/JogoEdit';
+import './App.css';
 
 function App() {
   return (

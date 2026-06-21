@@ -8,7 +8,6 @@ function Home() {
   const [favoritosIds, setFavoritosIds] = useState([]); 
   const [termoPesquisa, setTermoPesquisa] = useState(''); 
   const [carregando, setCarregando] = useState(true);
-  const [erro, setErro] = useState('');
 
   useEffect(() => {
     const buscarDados = async () => {
@@ -22,28 +21,24 @@ function Home() {
             const listaFavs = respostaFavs.data.favoritos || respostaFavs.data || [];
             idsFavoritos = listaFavs.map(fav => fav.id);
           } catch (e) {
-            console.log("Utilizador sem favoritos ou sessão expirada.");
+            console.log("Utilizador sem favoritos.");
           }
         }
 
-        // Rotas corrigidas para bater certo com o jogoRoutes.js
         const [respostaJogos, respostaTop] = await Promise.all([
           api.get('/jogos/list'),      
           api.get('/jogos/top-semana')    
         ]);
         
-        setJogos(respostaJogos.data.data || respostaJogos.data); // Ajustado para ler o "data" que o teu backend envia
+        setJogos(respostaJogos.data.data || respostaJogos.data);
         setTopJogos(respostaTop.data.data || respostaTop.data || []);
         setFavoritosIds(idsFavoritos);
-        
         setCarregando(false);
       } catch (err) {
         console.error("Erro ao carregar dados:", err);
-        setErro("Não foi possível carregar a lista de jogos.");
         setCarregando(false);
       }
     };
-
     buscarDados();
   }, []);
 
@@ -54,36 +49,53 @@ function Home() {
   if (carregando) {
     return (
       <div className="container mt-5 text-center">
-        <div className="spinner-border text-primary" role="status"></div>
-        <p className="mt-2 fw-semibold">A carregar o catálogo de jogos...</p>
+        <div className="spinner-border" style={{ color: 'var(--accent)' }} role="status"></div>
+        <p className="mt-3">A carregar o catálogo...</p>
       </div>
     );
   }
 
   return (
-    <div className="container mt-4 mb-5">
-      
-        {topJogos.length > 0 && (
-          <div className="mb-5 p-4 bg-dark rounded-4 shadow-lg text-white">
-            <h3 className="mb-4 fw-bold text-warning">🏆 Top da Semana</h3>
-            <div className="row g-4">
-              {topJogos.map((jogo) => (
-                <div className="col-md-4" key={`top-${jogo.id}`}>
+    <div className="container mt-5 mb-5">
+      {topJogos.length > 0 && (
+        <div className="mb-5">
+          <h3 className="mb-4 fw-bold text-center text-md-start">🏆 Top da Semana</h3>
+          <div className="row justify-content-center g-4">
+            {topJogos.map((jogo) => (
+              <div className="col-auto" key={`top-${jogo.id}`}>
+                <div className="card-hover-effect">
                   <JogoCard jogo={jogo} favoritoInicial={favoritosIds.includes(jogo.id)} />
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-        <h3 className="fw-bold text-dark mb-0">Catálogo Completo</h3>
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 gap-3">
+        <h3 className="fw-bold mb-0">Catálogo Completo</h3>
         
+        {/* Barra de Pesquisa corrigida */}
         <div className="input-group shadow-sm" style={{ maxWidth: '400px' }}>
-          <span className="input-group-text bg-white border-end-0">🔍</span>
+          <span 
+            className="input-group-text border-0" 
+            style={{ 
+              backgroundColor: '#161e2e', // Mesma cor do input e cartões
+              color: '#cbd5e1',           // Cor clara para a lupa se ver
+              borderRight: 'none',
+              paddingLeft: '15px'
+            }}
+          >
+            🔍
+          </span>
           <input 
             type="text" 
-            className="form-control border-start-0 ps-0" 
+            className="form-control border-0 shadow-none" 
+            style={{ 
+              backgroundColor: '#161e2e', // Mesma cor do span
+              color: '#fff',
+              borderLeft: 'none'
+            }}
             placeholder="Pesquisar por nome..." 
             value={termoPesquisa}
             onChange={(e) => setTermoPesquisa(e.target.value)}
@@ -92,23 +104,24 @@ function Home() {
       </div>
       
       {jogos.length === 0 ? (
-        <div className="alert alert-info text-center shadow-sm">
-          Ainda não há jogos inseridos na plataforma.
+        <div className="alert border-0 text-center shadow-sm" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-soft)' }}>
+          Ainda não há jogos na plataforma.
         </div>
       ) : jogosFiltrados.length === 0 ? (
-        <div className="alert alert-warning text-center shadow-sm">
+        <div className="alert border-0 text-center shadow-sm" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-soft)' }}>
           Não encontrámos nenhum jogo com o nome "<strong>{termoPesquisa}</strong>".
         </div>
       ) : (
-        <div className="row g-4">
+        <div className="row justify-content-center g-4">
           {jogosFiltrados.map((jogo) => (
-            <div className="col-md-4" key={jogo.id}>
-              <JogoCard jogo={jogo} favoritoInicial={favoritosIds.includes(jogo.id)} />
+            <div className="col-auto" key={jogo.id}>
+              <div className="card-hover-effect">
+                <JogoCard jogo={jogo} favoritoInicial={favoritosIds.includes(jogo.id)} />
+              </div>
             </div>
           ))}
         </div>
       )}
-      
     </div>
   );
 }

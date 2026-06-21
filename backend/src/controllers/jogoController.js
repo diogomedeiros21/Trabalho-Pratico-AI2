@@ -2,7 +2,6 @@ const Jogo = require('../models/Jogo');
 const Categoria = require('../models/Categoria');
 const Avaliacao = require('../models/Avaliacao');
 
-// FUNÇÃO AUXILIAR: Calcular média
 const calcularMedia = (avaliacoes) => {
   if (!avaliacoes || avaliacoes.length === 0) return "0.0";
   const soma = avaliacoes.reduce((total, avaliacao) => total + Number(avaliacao.nota), 0);
@@ -14,7 +13,8 @@ const calcularMedia = (avaliacoes) => {
 const listarJogos = async (req, res) => {
   try {
     const jogos = await Jogo.findAll({ 
-      include: [{ model: Categoria }, { model: Avaliacao }] 
+      // ADICIONADO O "as" AQUI
+      include: [{ model: Categoria, as: 'Categoria' }, { model: Avaliacao }] 
     });
 
     const jogosFormatados = jogos.map(jogo => {
@@ -35,7 +35,8 @@ const listarJogos = async (req, res) => {
 const listarTopSemana = async (req, res) => {
   try {
     const jogos = await Jogo.findAll({
-      include: [{ model: Categoria }, { model: Avaliacao }]
+      // ADICIONADO O "as" AQUI
+      include: [{ model: Categoria, as: 'Categoria' }, { model: Avaliacao }]
     });
 
     const jogosFormatados = jogos.map(jogo => {
@@ -53,12 +54,13 @@ const listarTopSemana = async (req, res) => {
   }
 };
 
-// 3. A NOVA FUNÇÃO: Obter apenas um jogo pelo ID
+// 3. Obter apenas um jogo pelo ID
 const obterJogo = async (req, res) => {
   try {
     const { id } = req.params;
     const jogo = await Jogo.findByPk(id, {
-      include: [{ model: Categoria }, { model: Avaliacao }]
+      // ADICIONADO O "as" AQUI
+      include: [{ model: Categoria, as: 'Categoria' }, { model: Avaliacao }]
     });
 
     if (!jogo) {
@@ -117,6 +119,4 @@ const eliminarJogo = async (req, res) => {
   }
 };
 
-// AQUI ESTAVA O PROBLEMA: Garantir que a função 'obterJogo' é exportada!
-module.exports = { listarJogos, listarTopSemana, obterJogo, criarJogo, eliminarJogo };
 module.exports = { listarJogos, listarTopSemana, obterJogo, criarJogo, atualizarJogo, eliminarJogo };
