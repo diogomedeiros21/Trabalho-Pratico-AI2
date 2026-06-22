@@ -1,19 +1,19 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
+// Tabela de ligação que guarda que utilizador gostou de que jogo
 const Favorito = sequelize.define('Favorito', {
-  // Vamos forçar a criação destas colunas provisoriamente
   userId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false 
   },
   jogoId: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false 
   },
   dataAdicao: {
     type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+    defaultValue: DataTypes.NOW 
   }
 });
 

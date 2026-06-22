@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // <-- A linha que tinha desaparecido!
+const sequelize = require('../config/database'); 
 
-// Define a estrutura principal dos Jogos a guardar na base de dados
+// Tabela principal que guarda toda a informação técnica sobre os jogos do catálogo
 const Jogo = sequelize.define('Jogo', {
   id: {
     type: DataTypes.INTEGER,
@@ -10,23 +10,23 @@ const Jogo = sequelize.define('Jogo', {
   },
   titulo: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false 
   },
   descricao: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true 
   },
   imagem: {
     type: DataTypes.STRING, 
-    allowNull: true
+    allowNull: true 
   },
   categoriaId: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true 
   },
   anoLancamento: { 
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true 
   },
   rating: { 
     type: DataTypes.STRING,

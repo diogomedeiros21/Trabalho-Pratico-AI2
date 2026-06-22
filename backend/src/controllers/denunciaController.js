@@ -4,13 +4,13 @@ const User = require('../models/User');
 const Jogo = require('../models/Jogo');
 const { registarLog } = require('./auditoriaController');
 
-// Utilizador envia uma denúncia
+// Quando alguém clica na bandeira para fazer queixa de um comentário
 const criarDenuncia = async (req, res) => {
   try {
     const userId = req.user.id;
     const { avaliacaoId, motivo } = req.body;
 
-    // Evitar spam: verificar se este user já denunciou esta avaliação
+    // Vê se a pessoa já não tinha feito queixa deste mesmo comentário antes para evitar spam
     const jaDenunciou = await Denuncia.findOne({ where: { userId, avaliacaoId, status: 'pendente' } });
     if (jaDenunciou) {
       return res.status(400).json({ success: false, message: 'Já enviaste uma denúncia para este comentário.' });
@@ -24,13 +24,13 @@ const criarDenuncia = async (req, res) => {
   }
 };
 
-// Admin vê todas as denúncias pendentes
+// Mostra a lista de queixas por resolver no painel do administrador
 const listarDenuncias = async (req, res) => {
   try {
     const denuncias = await Denuncia.findAll({
       where: { status: 'pendente' },
       include: [
-        { model: User, as: 'Denunciador', attributes: ['nome', 'email'] },
+        { model: User, as: 'Denunciador', attributes: ['nome', 'email'] }, 
         { 
           model: Avaliacao, 
           include: [
@@ -39,7 +39,7 @@ const listarDenuncias = async (req, res) => {
           ]
         }
       ],
-      order: [['createdAt', 'ASC']] 
+      order: [['createdAt', 'ASC']]
     });
 
     res.json({ success: true, denuncias });
@@ -49,7 +49,7 @@ const listarDenuncias = async (req, res) => {
   }
 };
 
-// Admin resolve a denúncia 
+// Quando se resolve a denuncia
 const resolverDenuncia = async (req, res) => {
   try {
     const { id } = req.params;
@@ -61,20 +61,23 @@ const resolverDenuncia = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Denúncia não encontrada.' });
     }
 
+    // Apagar comentario
     if (acao === 'apagar') {
       if (denuncia.Avaliacao) {
-        await denuncia.Avaliacao.destroy();
+        await denuncia.Avaliacao.destroy(); 
       }
       await Denuncia.update({ status: 'resolvida' }, { where: { avaliacaoId: denuncia.avaliacaoId } });
+      // Regista
       await registarLog(req.user.id, 'MODERACAO_APAGAR', `Apagou o comentário (Avaliação ID: ${denuncia.avaliacaoId}) do jogo ${denuncia.Avaliacao?.jogoId}`);
       
       return res.json({ success: true, message: 'Comentário apagado e denúncia resolvida.' });
     } 
     
+    // ignorar comentario
     if (acao === 'ignorar') {
       denuncia.status = 'rejeitada';
       await denuncia.save();
-        await registarLog(req.user.id, 'MODERACAO_IGNORAR', `Ignorou a denúncia ID: ${id}`);
+      await registarLog(req.user.id, 'MODERACAO_IGNORAR', `Ignorou a denúncia ID: ${id}`);
 
       return res.json({ success: true, message: 'Denúncia ignorada.' });
     }

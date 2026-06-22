@@ -1,6 +1,6 @@
 const Categoria = require('../models/Categoria');
 
-// Listar todas as categorias
+// Devolve a lista de todas as categorias para preencher os menus no site
 const listarCategorias = async (req, res) => {
   try {
     const categorias = await Categoria.findAll();
@@ -10,7 +10,7 @@ const listarCategorias = async (req, res) => {
   }
 };
 
-// Criar uma nova categoria
+// Permite criar uma categoria nova 
 const criarCategoria = async (req, res) => {
   try {
     const { nome } = req.body;

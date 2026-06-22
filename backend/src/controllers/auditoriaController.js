@@ -1,21 +1,22 @@
 const Auditoria = require('../models/Auditoria');
 const User = require('../models/User');
 
+// Função invisível para nos outros ficheiros para gravar quem fez o quê
 const registarLog = async (userId, acao, detalhes) => {
   try {
-    if (!userId) return;
-    await Auditoria.create({ userId, acao, detalhes });
+    if (!userId) return; 
+    await Auditoria.create({ userId, acao, detalhes }); 
   } catch (erro) {
     console.error("Erro ao gravar log de auditoria:", erro);
   }
 };
 
-// Rota para o Admin ver tudo
+// Vai buscar todo o histórico 
 const listarLogs = async (req, res) => {
   try {
     const logs = await Auditoria.findAll({
-      include: [{ model: User, as: 'Admin', attributes: ['nome', 'email'] }],
-      order: [['createdAt', 'DESC']] // Os mais recentes primeiro
+      include: [{ model: User, as: 'Admin', attributes: ['nome', 'email'] }], 
+      order: [['createdAt', 'DESC']] 
     });
     res.json({ success: true, data: logs });
   } catch (erro) {

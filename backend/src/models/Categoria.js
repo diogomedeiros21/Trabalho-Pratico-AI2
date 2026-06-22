@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-// Define a tabela das Categorias (ex: Ação, RPG, Desporto)
+// Define a tabela das Categorias 
 const Categoria = sequelize.define('Categoria', {
   id: {
     type: DataTypes.INTEGER,

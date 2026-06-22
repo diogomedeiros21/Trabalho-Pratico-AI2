@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
+// Tabela para guardar as queixas sobre os comentários da comunidade
 const Denuncia = sequelize.define('Denuncia', {
   id: {
     type: DataTypes.INTEGER,

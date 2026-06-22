@@ -1,18 +1,19 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
+// Tabela onde guarda comentários e as notas que os utilizadores dão aos jogos
 const Avaliacao = sequelize.define('Avaliacao', {
   nota: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false, 
     validate: {
       min: 1,
-      max: 5 // Notas apenas de 1 a 5!
+      max: 5 
     }
   },
   comentario: {
     type: DataTypes.TEXT,
-    allowNull: true // É opcional, porque o utilizador pode querer deixar só a nota sem escrever nada
+    allowNull: true 
   }
 });
 

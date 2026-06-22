@@ -5,21 +5,22 @@ const User = require('../models/User');
 const Favorito = require('../models/Favorito');
 const { registarLog } = require('./auditoriaController');
 
+// Função auxiliar para somar as notas todas e dividir para dar a média
 const calcularMedia = (avaliacoes) => {
   if (!avaliacoes || avaliacoes.length === 0) return "0.0";
   const soma = avaliacoes.reduce((total, avaliacao) => total + Number(avaliacao.nota), 0);
   const media = soma / avaliacoes.length;
-  return media.toFixed(1);
+  return media.toFixed(1); 
 };
 
-// 1. Listar todos os jogos
+// Vai buscar o catálogo todo de jogos
 const listarJogos = async (req, res) => {
   try {
     const jogos = await Jogo.findAll({ 
-      // ADICIONADO O "as" AQUI
       include: [{ model: Categoria, as: 'Categoria' }, { model: Avaliacao }] 
     });
 
+    // Pega em cada jogo e calcula a sua média antes de enviar para o site
     const jogosFormatados = jogos.map(jogo => {
       const jogoJSON = jogo.toJSON();
       const listaAvaliacoes = jogoJSON.Avaliacoes || jogoJSON.Avaliacaos || []; 
@@ -34,11 +35,10 @@ const listarJogos = async (req, res) => {
   }
 };
 
-// 2. O Top da Semana
+// Devolve top3
 const listarTopSemana = async (req, res) => {
   try {
     const jogos = await Jogo.findAll({
-      // ADICIONADO O "as" AQUI
       include: [{ model: Categoria, as: 'Categoria' }, { model: Avaliacao }]
     });
 
@@ -57,7 +57,7 @@ const listarTopSemana = async (req, res) => {
   }
 };
 
-// 3. Obter apenas um jogo pelo ID
+// Abre a página de um jogo específico e mostra os seus detalhes
 const obterJogo = async (req, res) => {
   try {
     const { id } = req.params;
@@ -66,7 +66,7 @@ const obterJogo = async (req, res) => {
         { model: Categoria, as: 'Categoria' }, 
         { 
           model: Avaliacao,
-          include: [{ model: User, attributes: ['nome'] }] // trazer o nome do user
+          include: [{ model: User, attributes: ['nome'] }] 
         }
       ]
     });
@@ -86,20 +86,22 @@ const obterJogo = async (req, res) => {
   }
 };
 
-// 4. Criar um novo jogo
+// Admin cria um jogo novo
 const criarJogo = async (req, res) => {
   try {
-    // Adicionamos o anoLancamento e rating ao req.body
     const { titulo, descricao, imagem, categoriaId, anoLancamento, rating } = req.body;
     const novoJogo = await Jogo.create({ titulo, descricao, imagem, categoriaId, anoLancamento, rating });
+    
+    // Regista
     await registarLog(req.user.id, 'CRIAR_JOGO', `Adicionou o jogo: ${titulo}`);
+    
     res.status(201).json(novoJogo);
   } catch (erro) {
     res.status(500).json({ mensagem: 'Erro ao criar jogo' });
   }
 };
 
-// Atualizar um jogo existente
+// Admin edita a informação de um jogo
 const atualizarJogo = async (req, res) => {
   try {
     const { id } = req.params;
@@ -110,9 +112,11 @@ const atualizarJogo = async (req, res) => {
       return res.status(404).json({ mensagem: 'Jogo não encontrado' });
     }
 
-    // Atualiza a linha na base de dados com tudo
     await jogo.update({ titulo, descricao, imagem, categoriaId, anoLancamento, rating });
+    
+    // Regista
     await registarLog(req.user.id, 'EDITAR_JOGO', `Editou o jogo: ${titulo} (ID: ${id})`);
+    
     res.json(jogo);
   } catch (erro) {
     console.error(erro);
@@ -120,45 +124,45 @@ const atualizarJogo = async (req, res) => {
   }
 };
 
-// 5. Eliminar um jogo
+// Admin elimina um jogo 
 const eliminarJogo = async (req, res) => {
   try {
     const { id } = req.params;
     await Jogo.destroy({ where: { id } });
+    
+    // Regista
     await registarLog(req.user.id, 'APAGAR_JOGO', `Apagou o jogo com ID: ${id}`);
+    
     res.json({ mensagem: 'Jogo eliminado com sucesso!' });
   } catch (erro) {
     res.status(500).json({ mensagem: 'Erro ao eliminar jogo' });
   }
 };
 
-// 6. Gerar Rankings Dinâmicos
+// O motor do pódio que está na página principal
 const obterRankings = async (req, res) => {
   try {
     const { tipo } = req.params; 
 
-    // Vai buscar os jogos todos e as respetivas avaliações
     const jogos = await Jogo.findAll({
       include: [{ model: Categoria, as: 'Categoria' }, { model: Avaliacao }]
     });
 
-    // Vai buscar os favoritos todos para podermos contar
     const todosFavoritos = await Favorito.findAll();
 
-    // Calcula os pontos de cada jogo
     let jogosFormatados = jogos.map(jogo => {
       const jogoJSON = jogo.toJSON();
       const listaAvaliacoes = jogoJSON.Avaliacoes || jogoJSON.Avaliacaos || [];
 
       jogoJSON.notaMedia = parseFloat(calcularMedia(listaAvaliacoes));
       jogoJSON.totalComentarios = listaAvaliacoes.length;
-      // Conta quantas vezes este ID de jogo aparece na tabela de Favoritos
+      // Vê quantas vezes este jogo apareceu na tabela de favoritos para saber os likes
       jogoJSON.totalFavoritos = todosFavoritos.filter(fav => fav.jogoId === jogo.id).length; 
 
       return jogoJSON;
     });
 
-    // Ordena a lista dependendo do botão que o utilizador clicou
+    // Ordena a lista do maior para o mais pequeno consoante a categoria
     if (tipo === 'avaliados') {
       jogosFormatados.sort((a, b) => b.notaMedia - a.notaMedia);
     } else if (tipo === 'populares') {
@@ -167,7 +171,7 @@ const obterRankings = async (req, res) => {
       jogosFormatados.sort((a, b) => b.totalComentarios - a.totalComentarios);
     }
 
-    // Devolve apenas os 3 primeiros
+    // Só devolve ao ecrã os 3 melhores
     res.json({ success: true, data: jogosFormatados.slice(0, 3) });
   } catch (erro) {
     console.error("Erro nos rankings:", erro);

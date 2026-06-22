@@ -2,25 +2,25 @@ const Favorito = require('../models/Favorito');
 const Jogo = require('../models/Jogo');
 const User = require('../models/User');
 const Avaliacao = require('../models/Avaliacao');
-const Categoria = require('../models/Categoria'); // 1. IMPORTANTE: Adicionado o import da Categoria!
+const Categoria = require('../models/Categoria'); 
 
-// Adicionar ou Remover dos Favoritos 
+// Quando alguém clica no coração de um jogo
 const adicionarFavorito = async (req, res) => {
   try {
     const userId = req.user.id; 
     const { jogoId } = req.body;
 
-    // Procura se o jogo já está nos favoritos
+    // Vai ver se o utilizador já tem este jogo guardado na lista dele
     const favoritoExistente = await Favorito.findOne({
       where: { userId, jogoId }
     });
 
     if (favoritoExistente) {
-      // Se já lá está, remove
+      // Se já lá estiver, apaga 
       await favoritoExistente.destroy();
       return res.json({ success: true, message: 'Removido dos favoritos.' });
     } else {
-      // Se não está, guarda
+      // Se não estiver, adiciona à lista
       await Favorito.create({ userId, jogoId });
       return res.status(201).json({ success: true, message: 'Adicionado aos favoritos!' });
     }
@@ -30,16 +30,16 @@ const adicionarFavorito = async (req, res) => {
   }
 };
 
-// Listar Favoritos com cálculo de média
+// Vai buscar todos os jogos que a pessoa guardou
 const listarFavoritos = async (req, res) => {
   try {
     const userId = req.user.id; 
 
+    // Vai buscar o utilizador e pede os jogos todos que ele adicionou
     const utilizador = await User.findByPk(userId, {
       include: {
         model: Jogo,
         through: { attributes: [] },
-        // 2. A MAGIA AQUI: O Jogo agora traz a Categoria atrás dele!
         include: [{ model: Categoria, as: 'Categoria' }]
       }
     });
@@ -48,7 +48,7 @@ const listarFavoritos = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Utilizador não encontrado.' });
     }
 
-    // Calculamos a nota para cada jogo favorito
+    // Faz as contas para saber a nota média de cada jogo que está nos favoritos
     const favoritosComNota = await Promise.all(utilizador.Jogos.map(async (jogo) => {
       const avaliacoes = await Avaliacao.findAll({ where: { jogoId: jogo.id } });
       
@@ -69,7 +69,6 @@ const listarFavoritos = async (req, res) => {
   }
 };
 
-// EXPORTAÇÃO CORRETA (Isto resolve o teu erro de 'undefined')
 module.exports = {
   adicionarFavorito,
   listarFavoritos
