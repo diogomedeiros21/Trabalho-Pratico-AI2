@@ -10,11 +10,10 @@ function Home() {
   const [categorias, setCategorias] = useState([]); 
   const [carregando, setCarregando] = useState(true);
 
-  // Estados dos Filtros
   const [termoPesquisa, setTermoPesquisa] = useState(''); 
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
   const [notaMinima, setNotaMinima] = useState('');
-  const [anoFiltro, setAnoFiltro] = useState(''); // Adicionado filtro de Ano
+  const [anoFiltro, setAnoFiltro] = useState(''); 
 
   const carregarRanking = async (tipo) => {
     try {
@@ -66,7 +65,6 @@ function Home() {
     carregarRanking(tipo);
   };
 
-  // A MAGIA DOS FILTROS COMBINADOS
   const jogosFiltrados = jogos.filter((jogo) => {
     const matchNome = jogo.titulo.toLowerCase().includes(termoPesquisa.toLowerCase());
     const matchCategoria = categoriaSelecionada ? jogo.categoriaId === Number(categoriaSelecionada) : true;
@@ -88,7 +86,6 @@ function Home() {
   return (
     <div className="container mt-5 mb-5">
       
-      {/* SECÇÃO DOS RANKINGS DINÂMICOS */}
       <div className="mb-5 custom-box p-4 rounded-4 shadow-sm">
         <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 gap-3">
           <h3 className="fw-bold mb-0">🏆 Pódio MundoGaming</h3>
@@ -96,27 +93,24 @@ function Home() {
           <div className="btn-group shadow-sm" role="group">
             <button 
               type="button" 
-              className={`btn fw-bold ${tipoRanking === 'avaliados' ? 'btn-warning text-dark' : 'btn-outline-secondary text-light border-0'}`}
-              style={tipoRanking !== 'avaliados' ? { backgroundColor: 'rgba(255,255,255,0.05)' } : {}}
+              className={`btn fw-bold ${tipoRanking === 'avaliados' ? 'btn-warning text-dark' : 'btn-outline-secondary text-light border-0 btn-ranking-inactive'}`}
               onClick={() => handleMudancaRanking('avaliados')}
             >
-              ⭐ Mais Bem Avaliados
+              Mais Bem Avaliados
             </button>
             <button 
               type="button" 
-              className={`btn fw-bold ${tipoRanking === 'populares' ? 'btn-warning text-dark' : 'btn-outline-secondary text-light border-0'}`}
-              style={tipoRanking !== 'populares' ? { backgroundColor: 'rgba(255,255,255,0.05)' } : {}}
+              className={`btn fw-bold ${tipoRanking === 'populares' ? 'btn-warning text-dark' : 'btn-outline-secondary text-light border-0 btn-ranking-inactive'}`}
               onClick={() => handleMudancaRanking('populares')}
             >
-              ❤️ Mais Populares
+              Mais Populares
             </button>
             <button 
               type="button" 
-              className={`btn fw-bold ${tipoRanking === 'comentados' ? 'btn-warning text-dark' : 'btn-outline-secondary text-light border-0'}`}
-              style={tipoRanking !== 'comentados' ? { backgroundColor: 'rgba(255,255,255,0.05)' } : {}}
+              className={`btn fw-bold ${tipoRanking === 'comentados' ? 'btn-warning text-dark' : 'btn-outline-secondary text-light border-0 btn-ranking-inactive'}`}
               onClick={() => handleMudancaRanking('comentados')}
             >
-              💬 Mais Comentados
+              Mais Comentados
             </button>
           </div>
         </div>
@@ -138,15 +132,12 @@ function Home() {
 
       <hr className="mb-5 hr-custom" />
 
-      {/* SECÇÃO DO CATÁLOGO COMPLETO E FILTROS ALINHADOS */}
       <div className="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center mb-4 gap-3">
         <h3 className="fw-bold mb-0 text-nowrap">Catálogo Completo</h3>
         
-        {/* Agrupamento dos Filtros à direita */}
         <div className="d-flex flex-column flex-md-row gap-2 w-100 justify-content-xl-end">
           
-          {/* 1. Pesquisa por Texto */}
-          <div className="input-group shadow-sm flex-grow-1" style={{ maxWidth: '300px' }}>
+          <div className="input-group shadow-sm flex-grow-1 search-wrapper-max">
             <span className="input-group-text search-icon border-0">🔍</span>
             <input 
               type="text" 
@@ -157,10 +148,8 @@ function Home() {
             />
           </div>
 
-          {/* 2. Filtro por Categoria */}
           <select 
-            className="form-select border-0 shadow-sm w-auto" 
-            style={{ backgroundColor: 'var(--card-bg)', color: '#fff' }}
+            className="form-select border-0 shadow-sm w-auto filter-input" 
             value={categoriaSelecionada}
             onChange={(e) => setCategoriaSelecionada(e.target.value)}
           >
@@ -170,35 +159,30 @@ function Home() {
             ))}
           </select>
 
-          {/* 3. Filtro por Ano */}
           <input 
             type="number" 
-            className="form-control border-0 shadow-sm w-auto" 
-            style={{ backgroundColor: 'var(--card-bg)', color: '#fff', maxWidth: '120px' }}
+            className="form-control border-0 shadow-sm w-auto filter-input year-wrapper-max" 
             placeholder="Ano" 
             value={anoFiltro}
             onChange={(e) => setAnoFiltro(e.target.value)}
           />
 
-          {/* 4. Filtro por Nota Média */}
           <select 
-            className="form-select border-0 shadow-sm w-auto" 
-            style={{ backgroundColor: 'var(--card-bg)', color: '#fff' }}
+            className="form-select border-0 shadow-sm w-auto filter-input" 
             value={notaMinima}
             onChange={(e) => setNotaMinima(e.target.value)}
           >
-            <option value="">Qualquer Nota</option>
+            <option value="">⭐ 0.0+ (Qualquer Nota)</option>
             <option value="1">⭐ 1.0+</option>
             <option value="2">⭐ 2.0+</option>
             <option value="3">⭐ 3.0+</option>
             <option value="4">⭐ 4.0+</option>
-            <option value="5">⭐ 5.0</option>
+            <option value="5">⭐ 5.0 (Perfeição)</option>
           </select>
 
         </div>
       </div>
       
-      {/* LISTAGEM DOS JOGOS */}
       {jogos.length === 0 ? (
         <div className="alert border-0 text-center shadow-sm alert-custom">
           Ainda não há jogos na plataforma.

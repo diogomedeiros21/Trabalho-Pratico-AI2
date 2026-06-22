@@ -79,10 +79,9 @@ function JogoCard({ jogo, favoritoInicial = false }) {
           
           <div className="mt-auto d-flex flex-column gap-3">
             <div className="d-flex justify-content-between align-items-center">
-              {/* NOTA COM 1 CASAS DECIMAIS */}
+              
               <div 
-                className="d-flex align-items-center text-warning" 
-                style={{ cursor: 'pointer' }}
+                className="d-flex align-items-center text-warning cursor-pointer" 
                 onClick={() => setMostrarModal(true)}
               >
                 <FaStar size={20} />
@@ -97,8 +96,7 @@ function JogoCard({ jogo, favoritoInicial = false }) {
                 </span>
                 <button 
                   onClick={handleFavoritoClick} 
-                  className="btn p-0 border-0 d-flex align-items-center"
-                  style={{ color: isFavorito ? '#ef4444' : '#64748b', background: 'transparent' }}
+                  className={`btn-fav ${isFavorito ? 'fav-active' : 'fav-inactive'}`}
                 >
                   {isFavorito ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
                 </button>
@@ -112,7 +110,6 @@ function JogoCard({ jogo, favoritoInicial = false }) {
         </div>
       </div>
 
-      {/* Modal e resto do componente mantêm-se iguais... */}
       {mostrarModal && (
         <div className="modal d-block modal-overlay">
           <div className="modal-dialog modal-dialog-centered">

@@ -74,9 +74,9 @@ export default function JogoEdit() {
 
   return (
     <div className="container py-5 d-flex justify-content-center">
-      <div className="card shadow-lg border-0 w-100 bg-dark" style={{ maxWidth: '700px' }}>
+      <div className="card shadow-lg border-0 w-100 bg-dark form-container-max">
         <div className="card-header bg-transparent border-0 pt-4 pb-0 px-4 text-center">
-          <h3 className="fw-bold text-warning">Editar Jogo</h3>
+          <h3 className="fw-bold text-warning">✏️ Editar Jogo</h3>
           <p className="text-white small">Altera os dados do jogo (ID: {id}).</p>
         </div>
         

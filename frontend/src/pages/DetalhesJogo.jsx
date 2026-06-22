@@ -109,20 +109,20 @@ function DetalhesJogo() {
 
           <div className="d-flex flex-wrap gap-2 mb-4">
             {jogo.anoLancamento && (
-              <span className="badge py-2 px-3" style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: 'var(--text-soft)', fontSize: '0.9rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                📅 Ano: {jogo.anoLancamento}
+              <span className="badge badge-detail py-2 px-3">
+                Ano: {jogo.anoLancamento}
               </span>
             )}
             {jogo.rating && (
-              <span className="badge py-2 px-3" style={{ backgroundColor: 'rgba(255,255,255,0.08)', color: 'var(--text-soft)', fontSize: '0.9rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                📊 Rating: {jogo.rating} / 10
+              <span className="badge badge-detail py-2 px-3">
+                Rating: {jogo.rating} / 10
               </span>
             )}
           </div>
           
           <h4 className="text-warning fw-bold mb-4 d-flex align-items-center">
             <FaStar className="mb-1 me-2" /> {parseFloat(jogo.notaMedia || 0).toFixed(1)} / 5.0 
-            <span className="ms-2 fs-6 fw-normal" style={{ color: 'var(--text-soft)' }}>(Comunidade)</span>
+            <span className="ms-2 fs-6 fw-normal text-soft">(Comunidade)</span>
           </h4>
 
           <h5 className="fw-bold text-white">Sobre o jogo:</h5>
@@ -139,7 +139,7 @@ function DetalhesJogo() {
           ) : (
             <div className="d-flex flex-column gap-3">
               {avaliacoes.map((av) => (
-                <div key={av.id} className="p-3 rounded-3 comment-box" style={{ backgroundColor: 'rgba(0,0,0,0.2)' }}>
+                <div key={av.id} className="p-3 rounded-3 comment-box comment-bg">
                   <div className="d-flex justify-content-between mb-2">
                     <span className="fw-bold text-warning">
                       {av.User?.nome || av.user?.nome || 'Utilizador'}
@@ -152,9 +152,8 @@ function DetalhesJogo() {
                       
                       <button 
                         onClick={() => handleDenunciar(av.id)} 
-                        className="btn btn-sm p-0 text-muted hover-danger" 
+                        className="btn-flag hover-danger text-muted" 
                         title="Denunciar comentário"
-                        style={{ background: 'transparent', border: 'none', transition: 'color 0.2s' }}
                       >
                         <FaFlag size={14} />
                       </button>

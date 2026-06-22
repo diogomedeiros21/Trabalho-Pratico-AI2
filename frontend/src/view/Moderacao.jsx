@@ -58,7 +58,7 @@ export default function Moderacao() {
   return (
     <div className="container py-5">
       <div className="d-flex align-items-center mb-4">
-        <h2 className="fw-bold text-white mb-0">🚩 Moderação de Comentários</h2>
+        <h2 className="fw-bold text-white mb-0">Moderação de Comentários</h2>
       </div>
 
       {denuncias.length === 0 ? (
@@ -90,8 +90,7 @@ export default function Moderacao() {
                   </div>
                 </div>
 
-                <div className="p-3 rounded" style={{ backgroundColor: 'rgba(0,0,0,0.2)', borderLeft: '4px solid var(--accent)' }}>
-                  <span className="text-warning small fw-bold">Comentário Original ({denuncia.Avaliacao?.User?.nome}):</span>
+                    <div className="p-3 rounded comment-original-bg">                  <span className="text-warning small fw-bold">Comentário Original ({denuncia.Avaliacao?.User?.nome}):</span>
                   <p className="text-white mb-0 mt-1 fst-italic">"{denuncia.Avaliacao?.comentario}"</p>
                 </div>
               </div>
