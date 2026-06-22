@@ -10,6 +10,7 @@ const avaliacoesRoutes = require('./src/routes/avaliacoesRoutes');
 const favoritosRoutes = require('./src/routes/favoritosRoutes');
 const jogoRoutes = require('./src/routes/jogoRoutes');
 const categoriaRoutes = require('./src/routes/categoriaRoutes');
+const denunciasRoutes = require('./src/routes/denunciasRoutes');
 
 // ==========================================
 // 2. IMPORTAÇÕES DOS MODELOS
@@ -17,10 +18,9 @@ const categoriaRoutes = require('./src/routes/categoriaRoutes');
 const User = require('./src/models/User');
 const Avaliacao = require('./src/models/Avaliacao');
 const Favorito = require('./src/models/Favorito');
-
 const Jogo = require('./src/models/Jogo');
 const Categoria = require('./src/models/Categoria');
-
+const Denuncia = require('./src/models/Denuncia');
 const app = express();
 
 // ==========================================
@@ -49,6 +49,14 @@ Jogo.belongsToMany(User, { through: Favorito, foreignKey: 'jogoId' });
 Categoria.hasMany(Jogo, { foreignKey: 'categoriaId', as: 'Jogos' });
 Jogo.belongsTo(Categoria, { foreignKey: 'categoriaId', as: 'Categoria' });
 
+// Um utilizador pode fazer várias denúncias
+User.hasMany(Denuncia, { foreignKey: 'userId', as: 'DenunciasFeitas' });
+Denuncia.belongsTo(User, { foreignKey: 'userId', as: 'Denunciador' });
+
+// Uma avaliação pode ter várias denúncias
+Avaliacao.hasMany(Denuncia, { foreignKey: 'avaliacaoId' });
+Denuncia.belongsTo(Avaliacao, { foreignKey: 'avaliacaoId' });
+
 
 // ==========================================
 // ROTAS DA API
@@ -60,8 +68,9 @@ app.use('/jogos', jogoRoutes);
 app.use('/categorias', categoriaRoutes);
 
 app.get('/', (req, res) => {
-  res.send('API do JogoAvalia a funcionar em pleno!');
+  res.send('API do Mundo Gaming a funcionar em pleno!');
 });
+app.use('/denuncias', denunciasRoutes);
 
 // ==========================================
 // INICIALIZAÇÃO (Sincronizar BD e Ligar Servidor)
