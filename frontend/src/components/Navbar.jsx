@@ -3,13 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 function Navbar() {
   const navigate = useNavigate();
   
+  // Vai ao armazenamento do browser ver se a pessoa tem token e se é admin
   const isAuthenticated = !!localStorage.getItem('token');
   const userRole = localStorage.getItem('role'); 
 
+  // Função para terminar sessão
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('role'); 
-    navigate('/login');
+    localStorage.removeItem('token'); 
+    localStorage.removeItem('role');
+    navigate('/login'); 
     window.location.reload(); 
   };
 

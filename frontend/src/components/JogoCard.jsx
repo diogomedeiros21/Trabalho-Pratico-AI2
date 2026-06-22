@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { FaHeart, FaRegHeart, FaStar } from 'react-icons/fa';
-import api from '../services/api';
 import { Link } from 'react-router-dom';
+import api from '../services/api';
 import Swal from 'sweetalert2';
 
 function JogoCard({ jogo, favoritoInicial = false }) {
+  // Variáveis para guardar o estado do cartão 
   const [isFavorito, setIsFavorito] = useState(favoritoInicial);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [nota, setNota] = useState(5);
@@ -18,9 +19,10 @@ function JogoCard({ jogo, favoritoInicial = false }) {
     try {
       const resposta = await api.post('/favoritos', { jogoId: jogo.id });
       if (resposta.data.success || resposta.status === 201 || resposta.status === 200) {
-        setIsFavorito(!isFavorito);
+        setIsFavorito(!isFavorito); 
       }
     } catch (erro) {
+      // Se não tiver login feito, mostra um aviso
       Swal.fire({
         title: 'Atenção!',
         text: 'Precisas de fazer Login para adicionar aos favoritos!',
@@ -30,6 +32,7 @@ function JogoCard({ jogo, favoritoInicial = false }) {
     }
   };
 
+  // Função para enviar a nota e o comentário para a base de dados
   const handleAvaliar = async (e) => {
     e.preventDefault(); 
     try {
@@ -46,8 +49,8 @@ function JogoCard({ jogo, favoritoInicial = false }) {
           icon: 'success',
           confirmButtonText: 'Fechar'
         });
-        setMostrarModal(false); 
-        setComentario(''); 
+        setMostrarModal(false);
+        setComentario('');
       }
     } catch (erro) {
       Swal.fire({

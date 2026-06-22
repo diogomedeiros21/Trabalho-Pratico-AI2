@@ -172,12 +172,12 @@ function Home() {
             value={notaMinima}
             onChange={(e) => setNotaMinima(e.target.value)}
           >
-            <option value="">⭐ 0.0+ (Qualquer Nota)</option>
+            <option value="">⭐ Qualquer Nota</option>
             <option value="1">⭐ 1.0+</option>
             <option value="2">⭐ 2.0+</option>
             <option value="3">⭐ 3.0+</option>
             <option value="4">⭐ 4.0+</option>
-            <option value="5">⭐ 5.0 (Perfeição)</option>
+            <option value="5">⭐ 5.0</option>
           </select>
 
         </div>

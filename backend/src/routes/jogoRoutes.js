@@ -7,7 +7,7 @@ const { checkToken, isAdmin } = require('../middlewares/authMiddleware');
 // Importa as funções com os nomes exatos do teu controller
 const { 
   listarJogos, 
-  listarTopSemana, // <-- Nome corrigido aqui para bater certo com o export
+  listarTopSemana, 
   obterJogo, 
   criarJogo, 
   atualizarJogo,
@@ -16,7 +16,7 @@ const {
 } = require('../controllers/jogoController');
 
 // Rotas lidas pelo Frontend
-router.get('/top-semana', listarTopSemana); // <-- Atualizado aqui também
+router.get('/top-semana', listarTopSemana); 
 router.get('/list', listarJogos);
 router.get('/get/:id', obterJogo);
 router.get('/ranking/:tipo', obterRankings);

@@ -9,13 +9,15 @@ function Register() {
   const [erro, setErro] = useState('');
   const navigate = useNavigate();
 
+  // Função para quando o user submete o formulário de registo
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setErro('');
     try {
+      // Envia os dados para a rota de registo no backend
       const resposta = await api.post('/auth/register', { nome, email, password });
       if (resposta.data.success || resposta.status === 201) {
-        navigate('/login'); 
+        navigate('/login'); // Se correu bem, manda para o login
       }
     } catch (err) {
       setErro(err.response?.data?.message || 'Erro ao criar conta. Tenta novamente.');
@@ -24,7 +26,6 @@ function Register() {
 
   return (
     <div className="container mt-5" style={{ maxWidth: '450px' }}>
-      {/* Adicionado bg-dark e border-secondary para integrar no Dark Mode */}
       <div className="card p-4 shadow-sm border-secondary" style={{ backgroundColor: '#1e293b' }}>
         <h3 className="mb-4 fw-bold text-center text-white">Criar Conta</h3>
         
@@ -70,9 +71,7 @@ function Register() {
         </form>
 
         <div className="mt-3 text-center">
-          {/* Mudado para text-light para garantir visibilidade */}
           <span className="text-light">Já tens conta? </span>
-          {/* Adicionado cor de destaque (ex: text-warning) para o link ficar visível */}
           <Link to="/login" className="text-decoration-none text-warning fw-bold">Inicia sessão aqui</Link>
         </div>
       </div>

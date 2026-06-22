@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Para redirecionar o utilizador após o login
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api'; 
 
 function Login() {
@@ -9,28 +9,22 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLoginSubmit = async (e) => {
-    e.preventDefault(); // Impede a página de recarregar
+    e.preventDefault();
     setErro('');
 
     try {
-      // Envia os dados para a rota de autenticação do backend
       const resposta = await api.post('/auth/login', { email, password });
 
-      // Se o backend responder com sucesso e trouxer o token
+      // Se a resposta for positiva, guarda o Token e o cargo do user
       if (resposta.data.success || resposta.data.token) {
-        // Guarda o token no cofre do navegador (localStorage)
-        localStorage.setItem('token', resposta.data.token);
+        localStorage.setItem('token', resposta.data.token); 
+        localStorage.setItem('role', resposta.data.role); // Identifica se é admin ou user comum
         
-        // NOVO: Guarda a role que vem do backend
-        localStorage.setItem('role', resposta.data.role);
-        
-        console.log('Login efetuado com sucesso! Token e role guardados.');
-        
-        // Redireciona e força a página a atualizar para a Navbar detetar o Token instantaneamente
+        // Redireciona para a página principal
         window.location.href = '/';
       }
     } catch (err) {
-      // Captura o erro do backend 
+      // Se algo correr mal, mostra a mensagem de erro 
       setErro(err.response?.data?.message || 'Erro ao efetuar login. Tenta novamente.');
     }
   };
@@ -40,6 +34,7 @@ function Login() {
       <div className="card p-4 shadow-sm border-0">
         <h3 className="mb-4 fw-bold text-center">Entrar</h3>
         
+        {/* Mostra mensagem de erro se a autenticação falhar */}
         {erro && <div className="alert alert-danger py-2">{erro}</div>}
 
         <form onSubmit={handleLoginSubmit}>

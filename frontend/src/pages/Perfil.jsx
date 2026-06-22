@@ -8,6 +8,7 @@ function Perfil() {
   const [avaliacoes, setAvaliacoes] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
+  // Quando o perfil abre, vai buscar ao backend os favoritos e avaliações deste user
   useEffect(() => {
     const buscarDados = async () => {
       try {
@@ -52,7 +53,6 @@ function Perfil() {
       <hr className="mb-5 hr-custom" />
 
       <h3 className="fw-bold mb-4 text-white">❤️ Os Meus Favoritos</h3>
-      
       {favoritos.length === 0 ? (
         <div className="text-center p-5 rounded-4 border-0 mb-5 alert-custom">
           <h5 className="fw-bold text-white">Ainda não tens jogos favoritos!</h5>
@@ -69,7 +69,6 @@ function Perfil() {
       )}
 
       <h3 className="fw-bold mb-4 text-white">⭐ As Minhas Avaliações</h3>
-      
       {avaliacoes.length === 0 ? (
         <div className="text-center p-5 rounded-4 border-0 alert-custom">
           <h5 className="fw-bold text-white">Ainda não avaliaste nenhum jogo!</h5>
@@ -91,9 +90,7 @@ function Perfil() {
                     <FaStar className="me-1 mb-1" />
                     <span className="fw-bold text-light">{av.nota}.0</span>
                   </div>
-                  <p className="mb-0 fst-italic lh-sm text-soft">
-                    "{av.comentario}"
-                  </p>
+                  <p className="mb-0 fst-italic lh-sm text-soft">"{av.comentario}"</p>
                 </div>
               </div>
             </div>
