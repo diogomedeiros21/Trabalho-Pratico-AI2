@@ -3,6 +3,7 @@ const Categoria = require('../models/Categoria');
 const Avaliacao = require('../models/Avaliacao');
 const User = require('../models/User');
 const Favorito = require('../models/Favorito');
+const { registarLog } = require('./auditoriaController');
 
 const calcularMedia = (avaliacoes) => {
   if (!avaliacoes || avaliacoes.length === 0) return "0.0";
@@ -91,17 +92,17 @@ const criarJogo = async (req, res) => {
     // Adicionamos o anoLancamento e rating ao req.body
     const { titulo, descricao, imagem, categoriaId, anoLancamento, rating } = req.body;
     const novoJogo = await Jogo.create({ titulo, descricao, imagem, categoriaId, anoLancamento, rating });
+    await registarLog(req.user.id, 'CRIAR_JOGO', `Adicionou o jogo: ${titulo}`);
     res.status(201).json(novoJogo);
   } catch (erro) {
     res.status(500).json({ mensagem: 'Erro ao criar jogo' });
   }
 };
 
-// 4.5. Atualizar um jogo existente
+// Atualizar um jogo existente
 const atualizarJogo = async (req, res) => {
   try {
     const { id } = req.params;
-    // Adicionamos o anoLancamento e rating ao req.body
     const { titulo, descricao, imagem, categoriaId, anoLancamento, rating } = req.body;
 
     const jogo = await Jogo.findByPk(id);
@@ -109,8 +110,9 @@ const atualizarJogo = async (req, res) => {
       return res.status(404).json({ mensagem: 'Jogo não encontrado' });
     }
 
-    // Atualizamos a linha na base de dados com tudo
+    // Atualiza a linha na base de dados com tudo
     await jogo.update({ titulo, descricao, imagem, categoriaId, anoLancamento, rating });
+    await registarLog(req.user.id, 'EDITAR_JOGO', `Editou o jogo: ${titulo} (ID: ${id})`);
     res.json(jogo);
   } catch (erro) {
     console.error(erro);
@@ -123,6 +125,7 @@ const eliminarJogo = async (req, res) => {
   try {
     const { id } = req.params;
     await Jogo.destroy({ where: { id } });
+    await registarLog(req.user.id, 'APAGAR_JOGO', `Apagou o jogo com ID: ${id}`);
     res.json({ mensagem: 'Jogo eliminado com sucesso!' });
   } catch (erro) {
     res.status(500).json({ mensagem: 'Erro ao eliminar jogo' });

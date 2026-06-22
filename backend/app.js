@@ -3,7 +3,7 @@ const cors = require('cors');
 const sequelize = require('./src/config/database');
 
 // ==========================================
-// 1. IMPORTAÇÕES DE ROTAS
+// importações de routes
 // ==========================================
 const authRoutes = require('./src/routes/authRoutes');
 const avaliacoesRoutes = require('./src/routes/avaliacoesRoutes');
@@ -13,7 +13,7 @@ const categoriaRoutes = require('./src/routes/categoriaRoutes');
 const denunciasRoutes = require('./src/routes/denunciasRoutes');
 
 // ==========================================
-// 2. IMPORTAÇÕES DOS MODELOS
+// importações de models
 // ==========================================
 const User = require('./src/models/User');
 const Avaliacao = require('./src/models/Avaliacao');
@@ -21,10 +21,11 @@ const Favorito = require('./src/models/Favorito');
 const Jogo = require('./src/models/Jogo');
 const Categoria = require('./src/models/Categoria');
 const Denuncia = require('./src/models/Denuncia');
+const Auditoria = require('./src/models/Auditoria');
 const app = express();
 
 // ==========================================
-// MIDDLEWARES
+// middlewares
 // ==========================================
 app.use(cors()); // Permite que o frontend faça pedidos à API sem bloqueios de segurança do browser
 app.use(express.json()); // Permite que a API perceba dados enviados em formato JSON
@@ -57,6 +58,11 @@ Denuncia.belongsTo(User, { foreignKey: 'userId', as: 'Denunciador' });
 Avaliacao.hasMany(Denuncia, { foreignKey: 'avaliacaoId' });
 Denuncia.belongsTo(Avaliacao, { foreignKey: 'avaliacaoId' });
 
+// Relações de auditoria
+// Um admin pode ter várias ações registadas
+User.hasMany(Auditoria, { foreignKey: 'userId', as: 'AcoesRegistadas' });
+Auditoria.belongsTo(User, { foreignKey: 'userId', as: 'Admin' });
+
 
 // ==========================================
 // ROTAS DA API
@@ -66,11 +72,12 @@ app.use('/avaliacoes', avaliacoesRoutes);
 app.use('/favoritos', favoritosRoutes);
 app.use('/jogos', jogoRoutes);
 app.use('/categorias', categoriaRoutes);
-
 app.get('/', (req, res) => {
   res.send('API do Mundo Gaming a funcionar em pleno!');
 });
 app.use('/denuncias', denunciasRoutes);
+const auditoriaRoutes = require('./src/routes/auditoriaRoutes');
+app.use('/auditoria', auditoriaRoutes);
 
 // ==========================================
 // INICIALIZAÇÃO (Sincronizar BD e Ligar Servidor)

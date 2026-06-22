@@ -9,6 +9,7 @@ import JogoList from './view/JogoList';
 import JogoAdd from './view/JogoAdd';
 import JogoEdit from './view/JogoEdit';
 import Moderacao from './view/Moderacao';
+import Auditoria from './view/Auditoria';
 import './App.css';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/jogos/add" element={<JogoAdd />} />
         <Route path="/jogos/edit/:id" element={<JogoEdit />} />
         <Route path="/moderacao" element={<Moderacao />} />
+        <Route path="/auditoria" element={<Auditoria />} />
       </Routes>
     </BrowserRouter>
   );

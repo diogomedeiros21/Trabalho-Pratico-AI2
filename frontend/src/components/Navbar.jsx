@@ -29,14 +29,17 @@ function Navbar() {
             <>
               {userRole === 'admin' && (
                 <>
-                  <Link className="text-warning text-decoration-none fw-bold" to="/moderacao">
-                    Moderação
-                  </Link>
                   <Link className="text-warning text-decoration-none fw-bold" to="/jogos/list">
                     Gerir Jogos
                   </Link>
                   <Link className="text-warning text-decoration-none fw-bold" to="/jogos/add">
                     Adicionar Jogo
+                  </Link>
+                  <Link className="text-warning text-decoration-none fw-bold" to="/auditoria">
+                    Registo de Logs
+                  </Link>
+                  <Link className="text-warning text-decoration-none fw-bold" to="/moderacao">
+                    Moderação
                   </Link>
                 </>
               )}

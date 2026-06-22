@@ -2,6 +2,7 @@ const Denuncia = require('../models/Denuncia');
 const Avaliacao = require('../models/Avaliacao');
 const User = require('../models/User');
 const Jogo = require('../models/Jogo');
+const { registarLog } = require('./auditoriaController');
 
 // Utilizador envia uma denúncia
 const criarDenuncia = async (req, res) => {
@@ -65,6 +66,7 @@ const resolverDenuncia = async (req, res) => {
         await denuncia.Avaliacao.destroy();
       }
       await Denuncia.update({ status: 'resolvida' }, { where: { avaliacaoId: denuncia.avaliacaoId } });
+      await registarLog(req.user.id, 'MODERACAO_APAGAR', `Apagou o comentário (Avaliação ID: ${denuncia.avaliacaoId}) do jogo ${denuncia.Avaliacao?.jogoId}`);
       
       return res.json({ success: true, message: 'Comentário apagado e denúncia resolvida.' });
     } 
@@ -72,6 +74,8 @@ const resolverDenuncia = async (req, res) => {
     if (acao === 'ignorar') {
       denuncia.status = 'rejeitada';
       await denuncia.save();
+        await registarLog(req.user.id, 'MODERACAO_IGNORAR', `Ignorou a denúncia ID: ${id}`);
+
       return res.json({ success: true, message: 'Denúncia ignorada.' });
     }
 
