@@ -61,21 +61,10 @@ function JogoCard({ jogo, favoritoInicial = false }) {
 
   return (
     <>
-      {/* Adicionei 'card-hover-effect' para o efeito de popup */}
-      <div className="card h-100 border-0 shadow-sm card-hover-effect" style={{ width: '280px', backgroundColor: '#1e293b' }}>
+      <div className="card h-100 border-0 shadow-sm card-hover-effect jogo-card-wrapper">
         <Link to={`/jogo/${jogo.id}`}>
-          <div style={{ height: '220px', overflow: 'hidden' }}>
-            <img 
-              src={jogo.imagem} 
-              className="card-img-top" 
-              alt={jogo.titulo} 
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                objectFit: 'cover', // ISSO VAI CORTAR AS BORDAS EM VEZ DE ESTICAR
-                objectPosition: 'center'
-              }} 
-            />
+          <div className="jogo-card-img-container">
+            <img src={jogo.imagem} className="card-img-top jogo-card-img" alt={jogo.titulo} />
           </div>
         </Link>
         
@@ -84,12 +73,13 @@ function JogoCard({ jogo, favoritoInicial = false }) {
             <h5 className="card-title fw-bold mb-2 text-truncate">{jogo.titulo}</h5>
           </Link>
           
-          <span className="badge align-self-start mb-4 px-3 py-2" style={{ backgroundColor: '#334155', color: '#94a3b8' }}>
+          <span className="badge badge-category align-self-start mb-4 px-3 py-2">
             {jogo.Categoria?.nome || jogo.categoria?.nome || "Sem Categoria"}
           </span>
           
           <div className="mt-auto d-flex flex-column gap-3">
             <div className="d-flex justify-content-between align-items-center">
+              {/* NOTA COM 1 CASAS DECIMAIS */}
               <div 
                 className="d-flex align-items-center text-warning" 
                 style={{ cursor: 'pointer' }}
@@ -97,17 +87,22 @@ function JogoCard({ jogo, favoritoInicial = false }) {
               >
                 <FaStar size={20} />
                 <span className="text-light ms-2 fw-bold">
-                  {jogo.notaMedia || "0.0"}
+                  {parseFloat(jogo.notaMedia || 0).toFixed(1)}
                 </span>
               </div>
 
-              <button 
-                onClick={handleFavoritoClick} 
-                className="btn p-0 border-0"
-                style={{ color: isFavorito ? '#ef4444' : '#64748b', background: 'transparent' }}
-              >
-                {isFavorito ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
-              </button>
+              <div className="d-flex align-items-center gap-2">
+                <span className="text-light fw-bold">
+                  {jogo.totalFavoritos !== undefined ? jogo.totalFavoritos : ''}
+                </span>
+                <button 
+                  onClick={handleFavoritoClick} 
+                  className="btn p-0 border-0 d-flex align-items-center"
+                  style={{ color: isFavorito ? '#ef4444' : '#64748b', background: 'transparent' }}
+                >
+                  {isFavorito ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
+                </button>
+              </div>
             </div>
             
             <Link to={`/jogo/${jogo.id}`} className="btn btn-warning w-100 fw-bold text-dark mt-2 shadow-sm">
@@ -117,11 +112,11 @@ function JogoCard({ jogo, favoritoInicial = false }) {
         </div>
       </div>
 
-      {/* Modal permanece igual... */}
+      {/* Modal e resto do componente mantêm-se iguais... */}
       {mostrarModal && (
-        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1050 }}>
+        <div className="modal d-block modal-overlay">
           <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content border-0 shadow" style={{ backgroundColor: '#1e293b', color: 'white' }}>
+            <div className="modal-content border-0 shadow modal-custom">
               <div className="modal-header border-0">
                 <h5 className="modal-title fw-bold">Avaliar: {jogo.titulo}</h5>
                 <button type="button" className="btn-close btn-close-white" onClick={() => setMostrarModal(false)}></button>
@@ -130,7 +125,7 @@ function JogoCard({ jogo, favoritoInicial = false }) {
                 <form onSubmit={handleAvaliar}>
                   <div className="mb-3">
                     <label className="form-label">Que nota dás a este jogo?</label>
-                    <select className="form-select bg-dark text-white border-0" value={nota} onChange={(e) => setNota(e.target.value)}>
+                    <select className="form-select border-0" value={nota} onChange={(e) => setNota(e.target.value)}>
                       <option value="5">⭐⭐⭐⭐⭐ (5) - Muito Bom</option>
                       <option value="4">⭐⭐⭐⭐ (4) - Bom</option>
                       <option value="3">⭐⭐⭐ (3) - Razoável</option>
@@ -140,7 +135,7 @@ function JogoCard({ jogo, favoritoInicial = false }) {
                   </div>
                   <div className="mb-4">
                     <label className="form-label">O teu comentário</label>
-                    <textarea className="form-control bg-dark text-white border-0" rows="3" placeholder="Escreve aqui..." value={comentario} onChange={(e) => setComentario(e.target.value)} required></textarea>
+                    <textarea className="form-control border-0" rows="3" placeholder="Escreve aqui..." value={comentario} onChange={(e) => setComentario(e.target.value)} required></textarea>
                   </div>
                   <button type="submit" className="btn btn-warning w-100 fw-bold">Enviar Avaliação</button>
                 </form>

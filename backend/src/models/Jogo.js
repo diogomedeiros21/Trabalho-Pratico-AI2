@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
-const Categoria = require('./Categoria'); // Importamos o modelo da Categoria
+const sequelize = require('../config/database'); // <-- A linha que tinha desaparecido!
 
 // Define a estrutura principal dos Jogos a guardar na base de dados
 const Jogo = sequelize.define('Jogo', {
@@ -21,16 +20,20 @@ const Jogo = sequelize.define('Jogo', {
     type: DataTypes.STRING, 
     allowNull: true
   },
-  // 1. A COLUNA QUE FALTAVA PARA O SEQUELIZE NÃO A IGNORAR
   categoriaId: {
     type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  anoLancamento: { 
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  rating: { 
+    type: DataTypes.STRING,
     allowNull: true
   }
 }, {
   tableName: 'Jogos'
 });
-
-Jogo.belongsTo(Categoria, { foreignKey: 'categoriaId', as: 'Categoria' });
-Categoria.hasMany(Jogo, { foreignKey: 'categoriaId', as: 'Jogos' });
 
 module.exports = Jogo;

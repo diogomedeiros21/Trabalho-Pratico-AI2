@@ -15,7 +15,6 @@ export default function JogoList() {
       .then(res => {
         const listaDeJogos = res.data.data ? res.data.data : res.data;
         
-        // ADICIONA ESTA LINHA AQUI:
         console.log("MATRIX DOS DADOS:", listaDeJogos); 
         
         setJogos(listaDeJogos);
@@ -74,7 +73,8 @@ export default function JogoList() {
       <div className="row align-items-center mb-4">
         <div className="col-md-8">
           {/* Corrigido para text-dark para ser visível no fundo branco */}
-            <h2 className="fw-bold text-white mb-0">⚙️ Gestão de Catálogo</h2>          <p className="text-secondary mb-0">Administração exclusiva da base de dados</p>
+            <h2 className="fw-bold text-white mb-0"> Gestão de Catálogo</h2>         
+             <p className="text-secondary mb-0">Administração exclusiva da base de dados</p>
         </div>
         <div className="col-md-4 text-md-end mt-3 mt-md-0">
           <Link to="/jogos/add" className="btn btn-warning fw-bold px-4 py-2 text-dark shadow-sm">

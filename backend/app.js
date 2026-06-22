@@ -46,8 +46,8 @@ User.belongsToMany(Jogo, { through: Favorito, foreignKey: 'userId' });
 Jogo.belongsToMany(User, { through: Favorito, foreignKey: 'jogoId' });
 
 // Uma Categoria tem vários Jogos
-Categoria.hasMany(Jogo, { foreignKey: 'categoriaId' });
-Jogo.belongsTo(Categoria, { foreignKey: 'categoriaId' });
+Categoria.hasMany(Jogo, { foreignKey: 'categoriaId', as: 'Jogos' });
+Jogo.belongsTo(Categoria, { foreignKey: 'categoriaId', as: 'Categoria' });
 
 
 // ==========================================

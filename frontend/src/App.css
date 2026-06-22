@@ -12,7 +12,9 @@ body {
   font-family: 'Inter', system-ui, sans-serif !important;
 }
 
-/* Cartões */
+/* ==========================================
+   ELEMENTOS GERAIS
+   ========================================== */
 .card {
   background-color: var(--card-bg) !important;
   border: 1px solid rgba(255, 255, 255, 0.04) !important;
@@ -20,19 +22,29 @@ body {
   transition: var(--transition);
 }
 
-/* Efeito Hover (Pop-up + Borda Amarela) */
-.card-hover-effect:hover .card {
-  transform: translateY(-10px);
-  border-color: var(--accent) !important;
-  box-shadow: 0 15px 35px -10px rgba(245, 158, 11, 0.25) !important;
-}
-
 .card-title {
   color: #fff !important;
   font-weight: 700 !important;
 }
 
-/* Botões */
+h3 {
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+
+.text-warning { color: var(--accent) !important; }
+.text-soft { color: var(--text-soft) !important; }
+.text-lh-large { line-height: 1.6; }
+
+.hr-custom {
+  height: 1px;
+  background-color: rgba(255,255,255,0.05);
+  border: 0;
+}
+
+/* ==========================================
+   BOTÕES E BADGES
+   ========================================== */
 .btn-warning {
   background-color: var(--accent) !important;
   border: none !important;
@@ -47,23 +59,20 @@ body {
   transform: scale(1.02);
 }
 
-/* Etiquetas e Textos */
 .badge {
   background-color: rgba(255, 255, 255, 0.03) !important;
   color: var(--text-soft) !important;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-h3 {
-  color: #fff !important;
-  font-weight: 800 !important;
+.badge-category {
+  background-color: #334155 !important;
+  color: #94a3b8 !important;
 }
 
-.text-warning {
-  color: var(--accent) !important;
-}
-
-/* Inputs e Formulários */
+/* ==========================================
+   INPUTS E FORMULÁRIOS
+   ========================================== */
 .form-control, .form-select {
   background-color: var(--card-bg) !important;
   border: 1px solid #2d3748 !important;
@@ -76,7 +85,7 @@ h3 {
   opacity: 0.6;
 }
 
-.form-control:focus {
+.form-control:focus, .form-select:focus {
   background-color: var(--card-bg) !important;
   border-color: var(--accent) !important;
   color: #fff !important;
@@ -86,4 +95,82 @@ h3 {
 .form-label {
   color: #ffffff !important;
   font-weight: 600;
+}
+
+/* Formulários de Admin (Brancos por opção visual) */
+.form-light-override {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.form-light-override:focus {
+  background-color: #f8f9fa !important;
+  color: #000000 !important;
+}
+
+.img-preview { max-height: 150px; }
+
+/* ==========================================
+   COMPONENTES ESPECÍFICOS
+   ========================================== */
+/* Navbar */
+.navbar-logo {
+  width: 60px;
+  height: 60px;
+  margin-right: 16px;
+  object-fit: contain;
+}
+
+/* Barra de Pesquisa */
+.search-container { max-width: 400px; }
+.search-icon {
+  background-color: var(--card-bg) !important;
+  color: var(--text-soft) !important;
+  border-right: none !important;
+  padding-left: 15px;
+}
+.search-input {
+  background-color: var(--card-bg) !important;
+  color: #fff !important;
+  border-left: none !important;
+}
+
+/* JogoCard */
+.jogo-card-wrapper { width: 280px; }
+.jogo-card-img-container { height: 220px; overflow: hidden; }
+.jogo-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.card-hover-effect:hover .card {
+  transform: translateY(-10px);
+  border-color: var(--accent) !important;
+  box-shadow: 0 15px 35px -10px rgba(245, 158, 11, 0.25) !important;
+}
+
+/* Modais */
+.modal-overlay { background-color: rgba(0,0,0,0.6); z-index: 1050; }
+.modal-custom { background-color: var(--card-bg); color: white; }
+
+/* Detalhes e Perfil */
+.custom-box {
+  background-color: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.detalhes-img { max-height: 400px; object-fit: cover; }
+.comment-box {
+  background-color: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.perfil-icon { width: 70px; height: 70px; font-size: 30px; }
+.review-img { width: 90px; height: 90px; object-fit: cover; }
+.alert-custom { background-color: var(--card-bg); color: var(--text-soft); }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

@@ -11,13 +11,15 @@ const {
   obterJogo, 
   criarJogo, 
   atualizarJogo,
-  eliminarJogo 
+  eliminarJogo,
+  obterRankings 
 } = require('../controllers/jogoController');
 
 // Rotas lidas pelo Frontend
 router.get('/top-semana', listarTopSemana); // <-- Atualizado aqui também
 router.get('/list', listarJogos);
 router.get('/get/:id', obterJogo);
+router.get('/ranking/:tipo', obterRankings);
 
 // Rotas protegidas para Administração
 router.post('/create', checkToken, isAdmin, criarJogo);
