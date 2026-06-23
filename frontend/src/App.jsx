@@ -15,21 +15,23 @@ import './App.css';
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-      <Routes>
+    <Navbar />
+    <Routes>
+        {/* Rotas Públicas e de Utilizador */}
         <Route path="/" element={<Home />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/jogo/:id" element={<DetalhesJogo />} />
+        <Route path="/jogo/:id" element={<DetalhesJogo />} /> 
         
-        {/* Rotas de Administração (CRUD) */}
+        {/* Rotas de Administração */}
         <Route path="/jogos/list" element={<JogoList />} />
         <Route path="/jogos/add" element={<JogoAdd />} />
         <Route path="/jogos/edit/:id" element={<JogoEdit />} />
         <Route path="/moderacao" element={<Moderacao />} />
         <Route path="/auditoria" element={<Auditoria />} />
       </Routes>
+
     </BrowserRouter>
   );
 }

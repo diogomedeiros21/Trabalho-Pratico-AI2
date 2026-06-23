@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 
 export default function Auditoria() {
+  // Variáveis para guardar o histórico logs
   const [logs, setLogs] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
+  // Quando a página abre, dispara a função para ir buscar os registos
   useEffect(() => {
     carregarLogs();
   }, []);
 
+  // Pede ao servidor a lista de todas as ações feitas pelos admins
   const carregarLogs = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -25,7 +28,7 @@ export default function Auditoria() {
     }
   };
 
-  // Função para formatar a data para o padrão português
+  // Função para pôr a data pt
   const formatarData = (dataString) => {
     const data = new Date(dataString);
     return data.toLocaleString('pt-PT', {
@@ -37,12 +40,12 @@ export default function Auditoria() {
     });
   };
 
-  // Função para dar cores diferentes dependendo da ação
+  // Dá uma cor diferente dependendo do que o admin fez
   const badgeAcao = (acao) => {
-    if (acao.includes('CRIAR')) return <span className="badge bg-success">{acao}</span>;
-    if (acao.includes('APAGAR')) return <span className="badge bg-danger">{acao}</span>;
-    if (acao.includes('EDITAR')) return <span className="badge bg-warning text-dark">{acao}</span>;
-    if (acao.includes('MODERACAO')) return <span className="badge bg-info text-dark">{acao}</span>;
+    if (acao.includes('CRIAR')) return <span className="badge bg-success">{acao}</span>; // Verde
+    if (acao.includes('APAGAR')) return <span className="badge bg-danger">{acao}</span>; // Vermelho
+    if (acao.includes('EDITAR')) return <span className="badge bg-warning text-dark">{acao}</span>; // Amarelo
+    if (acao.includes('MODERACAO')) return <span className="badge bg-info text-dark">{acao}</span>; // Azul
     return <span className="badge bg-secondary">{acao}</span>;
   };
 
@@ -71,6 +74,7 @@ export default function Auditoria() {
                 </tr>
               </thead>
               <tbody>
+                {/* Pega na lista de logs e cria uma linha na tabela para cada um */}
                 {logs.map((log) => (
                   <tr key={log.id}>
                     <td className="bg-transparent border-bottom border-secondary text-soft small text-nowrap">

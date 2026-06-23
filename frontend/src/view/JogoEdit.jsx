@@ -4,9 +4,10 @@ import api from '../services/api';
 import Swal from 'sweetalert2';
 
 export default function JogoEdit() {
-  const { id } = useParams();
+  const { id } = useParams(); 
   const navigate = useNavigate();
 
+  // Variáveis para guardar as informações
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [imagem, setImagem] = useState('');
@@ -16,6 +17,7 @@ export default function JogoEdit() {
   const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
+    // Pede as categorias para o dropdown
     api.get('/categorias')
       .then(res => {
         if (res.data.success) {
@@ -26,6 +28,7 @@ export default function JogoEdit() {
       })
       .catch(erro => console.error("Erro ao carregar categorias:", erro));
 
+    // Pede os dados que este jogo já tinha e preenche as caixas de texto automaticamente
     api.get(`/jogos/get/${id}`)
       .then(res => {
         const jogo = res.data.data ? res.data.data[0] : res.data; 
@@ -41,11 +44,13 @@ export default function JogoEdit() {
       .catch(erro => console.error("Erro ao carregar o jogo:", erro));
   }, [id]);
 
+  // Quando clica no botão "Guardar Alterações"
   const atualizarJogo = (e) => {
     e.preventDefault();
     const dados = { titulo, descricao, imagem, categoriaId, anoLancamento, rating };
     const token = localStorage.getItem('token');
 
+    // Manda os novos dados para substituir os antigos na base de dados
     api.post(`/jogos/update/${id}`, dados, {
       headers: { Authorization: `Bearer ${token}` }
     })

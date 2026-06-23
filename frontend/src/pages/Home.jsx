@@ -3,6 +3,7 @@ import JogoCard from '../components/JogoCard';
 import api from '../services/api';
 
 function Home() {
+  // Variáveis principais para guardar os dados vindos da Base de Dados
   const [jogos, setJogos] = useState([]);
   const [ranking, setRanking] = useState([]);
   const [tipoRanking, setTipoRanking] = useState('avaliados');
@@ -10,11 +11,13 @@ function Home() {
   const [categorias, setCategorias] = useState([]); 
   const [carregando, setCarregando] = useState(true);
 
+  // Variáveis para os filtros de pesquisa do utilizador
   const [termoPesquisa, setTermoPesquisa] = useState(''); 
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('');
   const [notaMinima, setNotaMinima] = useState('');
   const [anoFiltro, setAnoFiltro] = useState(''); 
 
+  // Vai buscar os 3 melhores jogos para preencher o pódio
   const carregarRanking = async (tipo) => {
     try {
       const res = await api.get(`/jogos/ranking/${tipo}`);
@@ -24,12 +27,14 @@ function Home() {
     }
   };
 
+  // Quando a página abre, carrega tudo
   useEffect(() => {
     const buscarDadosIniciais = async () => {
       try {
         const token = localStorage.getItem('token');
         let idsFavoritos = [];
 
+        // Se tiver login feito, vê logo quais são os jogos que têm o coração preenchido
         if (token) {
           try {
             const respostaFavs = await api.get('/favoritos');
@@ -40,6 +45,7 @@ function Home() {
           }
         }
 
+        // Pede os jogos e as categorias ao mesmo tempo para ser mais rápido
         const [respostaJogos, respostaCategorias] = await Promise.all([
           api.get('/jogos/list'),
           api.get('/categorias')
@@ -60,18 +66,20 @@ function Home() {
     buscarDadosIniciais();
   }, []);
 
+  // Quando o utilizador clica nos botões amarelos do pódio
   const handleMudancaRanking = (tipo) => {
     setTipoRanking(tipo);
     carregarRanking(tipo);
   };
 
+  // Verifica se cada jogo obedece às regras escolhidas nas caixas de pesquisa
   const jogosFiltrados = jogos.filter((jogo) => {
     const matchNome = jogo.titulo.toLowerCase().includes(termoPesquisa.toLowerCase());
     const matchCategoria = categoriaSelecionada ? jogo.categoriaId === Number(categoriaSelecionada) : true;
     const matchNota = notaMinima ? parseFloat(jogo.notaMedia) >= parseFloat(notaMinima) : true;
     const matchAno = anoFiltro ? jogo.anoLancamento === Number(anoFiltro) : true;
 
-    return matchNome && matchCategoria && matchNota && matchAno;
+    return matchNome && matchCategoria && matchNota && matchAno; 
   });
 
   if (carregando) {
@@ -86,6 +94,7 @@ function Home() {
   return (
     <div className="container mt-5 mb-5">
       
+      {/* Secção do Pódio */}
       <div className="mb-5 custom-box p-4 rounded-4 shadow-sm">
         <div className="d-flex flex-column flex-lg-row justify-content-between align-items-center mb-4 gap-3">
           <h3 className="fw-bold mb-0">🏆 Pódio MundoGaming</h3>
@@ -132,11 +141,13 @@ function Home() {
 
       <hr className="mb-5 hr-custom" />
 
+      {/* Secção do catálogo completo e barra de filtros */}
       <div className="d-flex flex-column flex-xl-row justify-content-between align-items-xl-center mb-4 gap-3">
         <h3 className="fw-bold mb-0 text-nowrap">Catálogo Completo</h3>
         
         <div className="d-flex flex-column flex-md-row gap-2 w-100 justify-content-xl-end">
           
+          {/* Filtro: Pesquisa por Nome */}
           <div className="input-group shadow-sm flex-grow-1 search-wrapper-max">
             <span className="input-group-text search-icon border-0">🔍</span>
             <input 
@@ -148,6 +159,7 @@ function Home() {
             />
           </div>
 
+          {/* Filtro: Categoria */}
           <select 
             className="form-select border-0 shadow-sm w-auto filter-input" 
             value={categoriaSelecionada}
@@ -159,6 +171,7 @@ function Home() {
             ))}
           </select>
 
+          {/* Filtro: Ano */}
           <input 
             type="number" 
             className="form-control border-0 shadow-sm w-auto filter-input year-wrapper-max" 
@@ -167,6 +180,7 @@ function Home() {
             onChange={(e) => setAnoFiltro(e.target.value)}
           />
 
+          {/* Filtro: Nota Mínima */}
           <select 
             className="form-select border-0 shadow-sm w-auto filter-input" 
             value={notaMinima}
@@ -183,6 +197,7 @@ function Home() {
         </div>
       </div>
       
+      {/* A Grelha onde aparecem os jogos já filtrados */}
       {jogos.length === 0 ? (
         <div className="alert border-0 text-center shadow-sm alert-custom">
           Ainda não há jogos na plataforma.

@@ -6,17 +6,16 @@ import Swal from 'sweetalert2';
 export default function JogoList() {
   const [jogos, setJogos] = useState([]);
 
+  // Assim que entra na página, chama a função para ir buscar os jogos
   useEffect(() => {
     carregarJogos();
   }, []);
 
+  // Pede ao backend a lista completa de jogos para mostrar na tabela
   const carregarJogos = () => {
     api.get('/jogos/list')
       .then(res => {
         const listaDeJogos = res.data.data ? res.data.data : res.data;
-        
-        console.log("MATRIX DOS DADOS:", listaDeJogos); 
-        
         setJogos(listaDeJogos);
       })
       .catch(error => {
@@ -28,9 +27,11 @@ export default function JogoList() {
       });
   };
 
+  // Quando o admin clica no botão "Apagar" 
   const eliminarJogo = (id) => {
     const token = localStorage.getItem('token');
     
+    // Pergunta sempre primeiro se tem a certeza para evitar acidentes
     Swal.fire({
       title: 'Tem a certeza?',
       text: "Esta ação apagará o jogo permanentemente!",
@@ -41,7 +42,9 @@ export default function JogoList() {
       confirmButtonText: 'Sim, apagar!',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
+      // Se clicou no botão "Sim"
       if (result.isConfirmed) {
+        // Envia o pedido de eliminação para o servidor
         api.post(`/jogos/delete/${id}`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         })
@@ -52,7 +55,7 @@ export default function JogoList() {
                 res.data.message || 'O jogo foi removido da base de dados.',
                 'success'
               );
-              carregarJogos();
+              carregarJogos();  
             }
           })
           .catch(error => {
@@ -66,13 +69,10 @@ export default function JogoList() {
     });
   };
 
-  
-
   return (
     <div className="container py-5">
       <div className="row align-items-center mb-4">
         <div className="col-md-8">
-          {/* Corrigido para text-dark para ser visível no fundo branco */}
             <h2 className="fw-bold text-white mb-0"> Gestão de Catálogo</h2>         
              <p className="text-secondary mb-0">Administração exclusiva da base de dados</p>
         </div>
@@ -102,6 +102,7 @@ export default function JogoList() {
                   </td>
                 </tr>
               ) : (
+                // Cria uma linha por cada jogo da base de dados
                 jogos.map((jogo) => (
                   <tr key={jogo.id}>
                     <th scope="row" className="ps-4 fw-normal text-secondary">#{jogo.id}</th>

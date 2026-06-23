@@ -10,6 +10,7 @@ export default function Moderacao() {
     carregarDenuncias();
   }, []);
 
+  // Vai ao backend pedir a lista das queixas que os utilizadores fizeram aos comentários
   const carregarDenuncias = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -24,6 +25,7 @@ export default function Moderacao() {
     }
   };
 
+  // Quando clica num dos botões para resolver a queixa
   const resolverDenuncia = (id, acao) => {
     const textoAcao = acao === 'apagar' ? 'apagar este comentário' : 'ignorar esta denúncia';
     const corBotao = acao === 'apagar' ? '#ef4444' : '#10b981';
@@ -37,6 +39,7 @@ export default function Moderacao() {
       cancelButtonText: 'Cancelar',
       confirmButtonText: 'Sim, confirmar!'
     }).then(async (result) => {
+      // Se o admin disser que sim, manda a decisão para o backend
       if (result.isConfirmed) {
         try {
           const token = localStorage.getItem('token');
@@ -45,7 +48,7 @@ export default function Moderacao() {
           });
           
           Swal.fire('Feito!', 'Ação processada com sucesso.', 'success');
-          carregarDenuncias(); // Atualiza a lista
+          carregarDenuncias();
         } catch (error) {
           Swal.fire('Erro!', 'Não foi possível processar a ação.', 'error');
         }
@@ -67,6 +70,7 @@ export default function Moderacao() {
         </div>
       ) : (
         <div className="row g-4">
+          {/* Mostra um cartão no ecrã por cada queixa feita */}
           {denuncias.map(denuncia => (
             <div className="col-12" key={denuncia.id}>
               <div className="custom-box p-4 rounded-4 shadow-sm">
@@ -81,16 +85,19 @@ export default function Moderacao() {
                     </p>
                   </div>
                   <div className="d-flex gap-2">
+                    {/* Botão verde */}
                     <button onClick={() => resolverDenuncia(denuncia.id, 'ignorar')} className="btn btn-sm btn-outline-success fw-bold">
                       Falso Alarme (Manter)
                     </button>
+                    {/* Botão vermelho */}
                     <button onClick={() => resolverDenuncia(denuncia.id, 'apagar')} className="btn btn-sm btn-danger fw-bold">
                       Apagar Comentário
                     </button>
                   </div>
                 </div>
 
-                    <div className="p-3 rounded comment-original-bg">                  <span className="text-warning small fw-bold">Comentário Original ({denuncia.Avaliacao?.User?.nome}):</span>
+                    <div className="p-3 rounded comment-original-bg">                  
+                  <span className="text-warning small fw-bold">Comentário Original ({denuncia.Avaliacao?.User?.nome}):</span>
                   <p className="text-white mb-0 mt-1 fst-italic">"{denuncia.Avaliacao?.comentario}"</p>
                 </div>
               </div>

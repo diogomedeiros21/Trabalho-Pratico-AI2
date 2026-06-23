@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 export default function JogoAdd() {
   const navigate = useNavigate();
 
+  // Variáveis para guardar o texto que o admin vai escrevendo no formulário
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [imagem, setImagem] = useState('');
@@ -14,6 +15,7 @@ export default function JogoAdd() {
   const [rating, setRating] = useState('');
   const [categorias, setCategorias] = useState([]);
 
+  // para preencher a caixa de seleção do formulário
   useEffect(() => {
     api.get('/categorias')
       .then(res => {
@@ -26,11 +28,14 @@ export default function JogoAdd() {
       .catch(erro => console.error("Erro ao carregar categorias:", erro));
   }, []);
 
+  // Quando o admin clica no botão de "Gravar Jogo"
   const guardarJogo = (e) => {
     e.preventDefault();
+    // Junta as informações todas 
     const dados = { titulo, descricao, imagem, categoriaId, anoLancamento, rating };
     const token = localStorage.getItem('token');
 
+    // Envia para o backend criar o jogo
     api.post('/jogos/create', dados, {
       headers: { Authorization: `Bearer ${token}` }
     })
@@ -43,7 +48,7 @@ export default function JogoAdd() {
             confirmButtonColor: '#f59e0b',
             confirmButtonText: 'Fantástico'
           }).then(() => {
-            navigate('/jogos/list');
+            navigate('/jogos/list'); 
           });
         }
       })
@@ -100,6 +105,7 @@ export default function JogoAdd() {
                 value={imagem} 
                 onChange={(e) => setImagem(e.target.value)} 
               />
+              {/* Se o admin colar um link, mostra logo a imagem por baixo para ele ver se funciona */}
               {imagem && (
                 <div className="mt-3 text-center">
                   <img src={imagem} alt="Pré-visualização" className="img-thumbnail border-0 shadow-sm img-preview" />

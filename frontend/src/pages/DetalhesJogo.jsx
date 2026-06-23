@@ -6,14 +6,18 @@ import api from '../services/api';
 
 function DetalhesJogo() {
   const { id } = useParams(); 
+  
+  // Variáveis de estado
   const [jogo, setJogo] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
+  // Quando a página abre, vai ao backend buscar as informações completas deste jogo
   useEffect(() => {
     const buscarDetalhes = async () => {
       try {
         const resposta = await api.get(`/jogos/get/${id}`);
+        // Dependendo de como o backend envia, guardamos os dados do jogo
         const dadosJogo = resposta.data.data ? resposta.data.data[0] : resposta.data;
         setJogo(dadosJogo);
         setCarregando(false);
@@ -27,7 +31,9 @@ function DetalhesJogo() {
     buscarDetalhes();
   }, [id]);
 
+  // Função quando se clica para denunciar um comentário
   const handleDenunciar = (avaliacaoId) => {
+    // Se a pessoa não tiver feito login, não deixamos fazer a queixa
     if (!localStorage.getItem('token')) {
       return Swal.fire({
         title: 'Atenção',
@@ -37,6 +43,7 @@ function DetalhesJogo() {
       });
     }
 
+    // Abre a janela de opções para escolher o motivo da queixa
     Swal.fire({
       title: 'Denunciar Comentário',
       text: 'Qual é o problema com esta avaliação?',
@@ -53,11 +60,13 @@ function DetalhesJogo() {
       confirmButtonText: 'Enviar Denúncia',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
+      // Se a pessoa escolheu um motivo e clicou em Enviar
       if (result.isConfirmed && result.value) {
         api.post('/denuncias', {
           avaliacaoId: avaliacaoId,
           motivo: result.value
         }, {
+          // Manda o token para provar quem está a fazer a queixa
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         })
         .then(res => {
@@ -82,16 +91,19 @@ function DetalhesJogo() {
     });
   };
 
+  // Ecrãs de espera e de erro 
   if (carregando) return <div className="container mt-5 text-center text-light"><div className="spinner-border text-warning"></div></div>;
   if (erro) return <div className="container mt-5 alert alert-danger border-0 shadow-sm">{erro}</div>;
   if (!jogo) return <div className="container mt-5 alert alert-warning border-0 shadow-sm">Jogo não encontrado.</div>;
 
+  // Garante que não dá erro se o jogo ainda não tiver avaliações
   const avaliacoes = jogo.Avaliacoes || jogo.Avaliacaos || [];
 
   return (
     <div className="container mt-5 mb-5">
       <Link to="/" className="btn btn-outline-light mb-4 fw-bold">← Voltar ao Catálogo</Link>
       
+      {/* Secção de Detalhes do Jogo */}
       <div className="row p-4 p-md-5 rounded-4 shadow-sm custom-box">
         <div className="col-md-5 text-center mb-4 mb-md-0">
           <img 
@@ -132,6 +144,7 @@ function DetalhesJogo() {
 
           <hr className="my-4 hr-custom" />
 
+          {/* Secção de Comentários */}
           <h5 className="fw-bold mb-3 text-white">O que a comunidade diz:</h5>
           
           {avaliacoes.length === 0 ? (
@@ -150,6 +163,7 @@ function DetalhesJogo() {
                         <FaStar className="mb-1"/> {av.nota}.0
                       </span>
                       
+                      {/* O botão para denunciar */}
                       <button 
                         onClick={() => handleDenunciar(av.id)} 
                         className="btn-flag hover-danger text-muted" 
